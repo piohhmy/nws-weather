@@ -40,17 +40,20 @@ def parse_dwml(dwml):
         forecast = Forecast(Coordinates(lat, lng))
         temperatures = forecasts[point_index].getElementsByTagName("temperature")
         daily_index = 0
-        values = temperatures[0].getElementsByTagName("value")
-        for value in values:
+        daily_highs = temperatures[0].getElementsByTagName("value")
+        daily_lows = temperatures[1].getElementsByTagName("value")
+        for high in daily_highs:
             # TODO: Add this data into forecast object
             start_time = start_times[daily_index].firstChild.nodeValue
             end_time = end_times[daily_index].firstChild.nodeValue
             print start_time
             print end_time
-            if value.hasChildNodes() == True:
-                print "Daily high: " + value.firstChild.nodeValue
+            if daily_highs[daily_index].hasChildNodes() == True:
+                print "High: " + daily_highs[daily_index].firstChild.nodeValue
+            if daily_lows[daily_index].hasChildNodes() == True:
+                print "Low: " + daily_lows[daily_index].firstChild.nodeValue
             conditions = forecasts[point_index].getElementsByTagName("weather-conditions")
-            print conditions[daily_index].getAttribute('weather-summary')
+            print "Conditions: " + conditions[daily_index].getAttribute('weather-summary')
             print "\n"
             daily_index = daily_index + 1
         point_index = point_index + 1
