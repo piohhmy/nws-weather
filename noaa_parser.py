@@ -31,18 +31,16 @@ def parse_dwml(dwml):
 
     forecast_grid = []
 
-    point_index = 0
-    for point in points:
+    for point_index in range(len(points)):
         lat = points[point_index].getAttribute("latitude")
         lng = points[point_index].getAttribute("longitude")
         print "Latitude: " + lat
         print "Longitude: " + lng
         forecast = Forecast(Coordinates(lat, lng))
         temperatures = forecasts[point_index].getElementsByTagName("temperature")
-        daily_index = 0
         daily_highs = temperatures[0].getElementsByTagName("value")
         daily_lows = temperatures[1].getElementsByTagName("value")
-        for high in daily_highs:
+        for daily_index in range(len(daily_highs)):
             # TODO: Add this data into forecast object
             start_time = start_times[daily_index].firstChild.nodeValue
             end_time = end_times[daily_index].firstChild.nodeValue
@@ -55,8 +53,6 @@ def parse_dwml(dwml):
             conditions = forecasts[point_index].getElementsByTagName("weather-conditions")
             print "Conditions: " + conditions[daily_index].getAttribute('weather-summary')
             print "\n"
-            daily_index = daily_index + 1
-        point_index = point_index + 1
         forecast_grid.append(forecast)
         print "-------------"
         
