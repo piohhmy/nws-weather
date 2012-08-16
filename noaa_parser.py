@@ -2,10 +2,11 @@ import urllib2
 import urllib
 import xml.dom.minidom as minidom
 import time
+import logging
 from forecast import *
 
 def main():
-    dwml = request_dwml_grid(45.5508, -122.738, 50.0, 50.0, 20.0)
+    dwml = request_dwml_grid(45.5508, -122.738, 50.0, 50.0, 50.0)
     print dwml
     forecast_grid = parse_dwml(dwml)
 
@@ -13,9 +14,8 @@ def main():
 def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution):
     noaaURL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php"
     paramaters = {"centerPointLat" : lat, "centerPointLon" : lng, "distanceLat" : lat_distance, "distanceLon" : lng_distance, "resolutionSquare" : resolution, "numDays" : 7}
-    url_query_string = urllib.urlencode(paramaters)
-    url = noaaURL + "?" + url_query_string + "&format=24+hourly"
-    #?centerPointLat=45.5508&centerPointLon=-122.738&distanceLat=50.0&distanceLon=50.0&resolutionSquare=20.0&format=24+hourly&numDays=7"
+    url_query_string = urllib.urlencode(paramaters) + "&format=24+hourly" # urlencoding the '+' in format param causes an error, explicitly add it
+    url = noaaURL + "?" + url_query_string 
     f = urllib2.urlopen(url)
     print url
     dwml = f.read()
@@ -23,33 +23,40 @@ def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution):
 
 def parse_dwml(dwml):
     doc = minidom.parseString(dwml)
-    locations = doc.getElementsByTagName("parameters")
+    forecasts = doc.getElementsByTagName("parameters")
     points = doc.getElementsByTagName("point")
-    # TODO: Create objects from these
+    start_times = doc.getElementsByTagName("start-valid-time")
+    end_times = doc.getElementsByTagName("end-valid-time")
+   
 
     forecast_grid = []
 
+    point_index = 0
     for point in points:
-        lat = point.getAttribute("latitude")
-        lng = point.getAttribute("longitude")
+        lat = points[point_index].getAttribute("latitude")
+        lng = points[point_index].getAttribute("longitude")
         print "Latitude: " + lat
         print "Longitude: " + lng
         forecast = Forecast(Coordinates(lat, lng))
+        temperatures = forecasts[point_index].getElementsByTagName("temperature")
+        daily_index = 0
+        values = temperatures[0].getElementsByTagName("value")
+        for value in values:
+            # TODO: Add this data into forecast object
+            start_time = start_times[daily_index].firstChild.nodeValue
+            end_time = end_times[daily_index].firstChild.nodeValue
+            print start_time
+            print end_time
+            if value.hasChildNodes() == True:
+                print "Daily high: " + value.firstChild.nodeValue
+            conditions = forecasts[point_index].getElementsByTagName("weather-conditions")
+            print conditions[daily_index].getAttribute('weather-summary')
+            print "\n"
+            daily_index = daily_index + 1
+        point_index = point_index + 1
         forecast_grid.append(forecast)
-
-    grid_index = 0
-    for location in locations:
-        temperatures = location.getElementsByTagName("temperature")
-        for temp in temperatures:
-            print temp.getAttribute('type')
-            values = temp.getElementsByTagName("value")
-            #TODO: populate Weather obj
-            for value in values:
-                if value.hasChildNodes() == True:
-                    print value.firstChild.nodeValue
-        conditions = location.getElementsByTagName("weather-conditions")
-        for condition in conditions:
-            print condition.getAttribute('weather-summary')
-
+        print "-------------"
+        
+        
 if __name__ == "__main__":
     main()
