@@ -57,6 +57,7 @@ def parse_dwml(dwml):
             print "\n"
         forecast_grid.append(forecast)
         print "-------------"
+	return forecast_grid
         
         
 if __name__ == "__main__":
