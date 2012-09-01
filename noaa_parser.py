@@ -3,7 +3,7 @@
 import urllib2
 import urllib
 import xml.dom.minidom as minidom
-import time
+import datetime
 import logging
 from forecast import *
 
@@ -48,6 +48,8 @@ def parse_dwml(dwml):
             end_time = end_times[daily_index].firstChild.nodeValue
             print start_time
             print end_time
+            dt = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S-07:00")
+            weather = Weather(50, 40, "nice")
             if daily_highs[daily_index].hasChildNodes() == True:
                 print "High: " + daily_highs[daily_index].firstChild.nodeValue
             if daily_lows[daily_index].hasChildNodes() == True:
@@ -55,6 +57,7 @@ def parse_dwml(dwml):
             conditions = forecasts[point_index].getElementsByTagName("weather-conditions")
             print "Conditions: " + conditions[daily_index].getAttribute('weather-summary')
             print "\n"
+            forecast.daily_weather[dt.date()] = weather
         forecast_grid.append(forecast)
         print "-------------"
 	return forecast_grid
