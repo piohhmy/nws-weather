@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from forecast import *
 import unittest
 class TestForecast(unittest.TestCase):
@@ -25,6 +27,11 @@ class TestCoordinates(unittest.TestCase):
         coors1 = Coordinates(self.latitude, self.longitude)
         coors2 = Coordinates(self.latitude, self.longitude)
         self.assertEqual(coors1, coors2)
+
+    def test_weather_equality(self):
+        weather1 = Weather(10, 20, "sunny")
+        weather2 = Weather(10, 20, "sunny")
+        self.assertEqual(weather1, weather2)
         
 
 if __name__ == '__main__':
