@@ -19,6 +19,8 @@ class Forecast:
     def __init__(self, coordinates):
         self.coordinates = coordinates
         self.daily_weather = {}
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.__dict__)
 
 
 class Weather:

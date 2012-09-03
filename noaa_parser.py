@@ -11,7 +11,7 @@ def main():
     dwml = request_dwml_grid(45.5508, -122.738, 50.0, 50.0, 50.0)
     print dwml
     forecast_grid = parse_dwml(dwml)
-
+    print_forecast(forecast_grid)
 
 def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution):
     noaaURL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php"
@@ -30,9 +30,7 @@ def parse_dwml(dwml):
     start_times = doc.getElementsByTagName("start-valid-time")
     end_times = doc.getElementsByTagName("end-valid-time")
    
-
     forecast_grid = []
-
     for point_index in range(len(points)):
         lat = points[point_index].getAttribute("latitude")
         lng = points[point_index].getAttribute("longitude")
@@ -53,8 +51,15 @@ def parse_dwml(dwml):
             dt = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S-07:00")
             forecast.daily_weather[dt.date()] = weather
         forecast_grid.append(forecast)
-	return forecast_grid
+    return forecast_grid
         
+def print_forecast(forecast_grid):
+    for forecast in forecast_grid:
+        print "Forecast for Lat:%s, Lon:%s" % (forecast.coordinates.lat, forecast.coordinates.lng)
+        for day, weather in forecast.daily_weather.items():
+            print "%s: High %s, Low %s, Condition %s " % (str(day), weather.high, weather.low, weather.condition) 
+
+        print "\n"
         
 if __name__ == "__main__":
     main()

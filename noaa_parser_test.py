@@ -60,6 +60,8 @@ class TestForecast(unittest.TestCase):
         expected_weather = Weather(78, 45, "Mostly Sunny")
         self.assertEqual(actual_weather, expected_weather) 
 
+    def test_static_dwml_contains_forecast_for_multiple_points(self):
+        self.assertEqual(len(self.forecasts), 9)
 if __name__ == '__main__':
     unittest.main(exit=False)
    
