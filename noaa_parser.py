@@ -14,14 +14,24 @@ def main():
     print_forecast(forecast_grid)
 
 def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution):
-    noaaURL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php"
-    paramaters = {"centerPointLat" : lat, "centerPointLon" : lng, "distanceLat" : lat_distance, "distanceLon" : lng_distance, "resolutionSquare" : resolution, "numDays" : 7}
-    url_query_string = urllib.urlencode(paramaters) + "&format=24+hourly" # urlencoding the '+' in format param causes an error, explicitly add it
-    url = noaaURL + "?" + url_query_string 
+    url = build_noaa_url(lat, lng, lat_distance, lng_distance, resolution)
     f = urllib2.urlopen(url)
-    print url
     dwml = f.read()
     return dwml
+
+def build_noaa_url(lat, lng, lat_distance, lng_distance, resolution):
+    noaaURL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php"
+    paramaters = {"centerPointLat" : lat, \
+                  "centerPointLon" : lng, \
+                  "distanceLat" : lat_distance, \
+                  "distanceLon" : lng_distance, \
+                  "resolutionSquare" : resolution, \
+                  "numDays" : 7}
+    encoded_params = urllib.urlencode(paramaters)
+    nonencoded_params = "&format=24+hourly" # api does not want '+' urlencoded 
+    url_query_string = encoded_params + nonencoded_params
+    url = noaaURL + "?" + url_query_string 
+    return url
 
 def parse_dwml(dwml):
     doc = minidom.parseString(dwml)
