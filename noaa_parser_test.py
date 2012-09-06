@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import datetime
-import noaa_parser
+import dwml_parser
 import unittest
 from forecast import *
 """
@@ -42,7 +42,7 @@ class TestForecast(unittest.TestCase):
     def setUp(self):
         f = open('sample_grid_response.xml')	
         dwml = f.read()
-        parser = noaa_parser.DWML_Parser(dwml)
+        parser = dwml_parser.DWML_Parser(dwml)
         self.forecasts = parser.generate_forecast_grid()
 
     def test_static_dwml_is_not_null(self):
