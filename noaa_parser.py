@@ -68,35 +68,45 @@ class DWML_Parser:
         return forecast_dates
 
     def get_weather_forecasts(self):
-        forecasts = []
+        weather_list= []
         for forecast in self.root.iter("parameters"):
-            max_temps = []
-            min_temps = []
-            daily_conditions = []
-            for temperature_set in forecast.iter("temperature"):
-                if temperature_set.attrib["type"] == "maximum":
-                    for daily_max in temperature_set.iter("value"):
-                        max_temps.append(int(daily_max.text))
-                else:
-                    for daily_min in temperature_set.iter("value"):
-                        min_temps.append(int(daily_min.text))
-            for daily_condition in forecast.iter("weather-conditions"):
-                daily_conditions.append(daily_condition.attrib["weather-summary"])
-                
+            max_temps, min_temps = self.get_daily_temperatures(forecast)            
+            daily_conditions = self.get_daily_conditions(forecast)
+            daily_weather = self.munge_daily_weather(max_temps, min_temps, daily_conditions)
+            weather_list.append(daily_weather)
+        return weather_list
 
-            daily_weather = []
-            for max_temp, min_temp, condition in zip(max_temps, min_temps, daily_conditions):
-                daily_weather.append(Weather(max_temp, min_temp, condition))
-            forecasts.append(daily_weather)
-        return forecasts
+    def get_daily_temperatures(self, forecast):
+        max_temps = []
+        min_temps = []
+        for temperature_set in forecast.iter("temperature"):
+            if temperature_set.attrib["type"] == "maximum":
+                for daily_max in temperature_set.iter("value"):
+                    max_temps.append(int(daily_max.text))
+            else:
+                for daily_min in temperature_set.iter("value"):
+                    min_temps.append(int(daily_min.text))
+        return max_temps, min_temps
 
-    def munge_forecast_grid(self, coordinates, forecast_dates, forecasts):
+    def get_daily_conditions(self, forecast):
+        daily_conditions = []
+        for daily_condition in forecast.iter("weather-conditions"):
+            daily_conditions.append(daily_condition.attrib["weather-summary"])
+        return daily_conditions
+
+    def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
+        daily_weather = []
+        for max_temp, min_temp, condition in zip(max_temps, min_temps, daily_conditions):
+            daily_weather.append(Weather(max_temp, min_temp, condition))
+        return daily_weather
+
+    def munge_forecast_grid(self, coordinates, dates, weather_list):
         forecast_grid = []
-        for coord, forecast in zip(coordinates, forecasts):
-            new_forecast = Forecast(coord)
-            for start_time, weather in zip(forecast_dates, forecast):
-               new_forecast.daily_weather[start_time] = weather
-            forecast_grid.append(new_forecast)
+        for coord, weather in zip(coordinates, weather_list):
+            forecast = Forecast(coord)
+            for start_date, weather_per_day in zip(dates, weather):
+               forecast.daily_weather[start_date] = weather_per_day
+            forecast_grid.append(forecast)
         return forecast_grid
 
 if __name__ == "__main__":
