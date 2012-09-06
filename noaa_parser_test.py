@@ -41,18 +41,19 @@ Point 1 data from sample_grid_response.xml
 class TestForecast(unittest.TestCase):
     def setUp(self):
         f = open('sample_grid_response.xml')	
-    	dwml = f.read()
-    	self.forecasts = noaa_parser.parse_dwml(dwml)
-	
+        dwml = f.read()
+        parser = noaa_parser.DWML_Parser(dwml)
+        self.forecasts = parser.generate_forecast_grid()
+
     def test_static_dwml_is_not_null(self):
-    	self.assertIsNotNone(self.forecasts)
+        self.assertIsNotNone(self.forecasts)
 
     def test_static_dwml_contains_a_forecast(self):
-    	self.assertIsInstance(self.forecasts[0], Forecast)
+        self.assertIsInstance(self.forecasts[0], Forecast)
 
     def test_static_dwml_contains_weather_condition_for_date(self):
         requested_date = datetime.date(2012, 8, 31)
-    	self.assertIsInstance(self.forecasts[0].daily_weather[requested_date], Weather)
+        self.assertIsInstance(self.forecasts[0].daily_weather[requested_date], Weather)
 
     def test_static_dwml_contains_correct_weather_data(self):
         requested_date = datetime.date(2012, 8, 31)
