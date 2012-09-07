@@ -3,6 +3,7 @@
 import xml.etree.ElementTree as ET
 import datetime
 from forecast import *
+
 class DWML_Parser:
     def __init__(self, dwml):
         self.root  = ET.fromstring(dwml)
@@ -13,47 +14,48 @@ class DWML_Parser:
         forecasts = self.get_weather_forecasts()
         return self.munge_forecast_grid(coordinates, forecast_dates, forecasts)
 
+    #TODO: make these functions private
     def get_coordinate_list(self):
         coordinates = []
-        for point in self.root.iter("point"):
-            lat = point.attrib["latitude"]            
-            lng = point.attrib["longitude"]
+        for point_node in self.root.iter("point"):
+            lat = point_node.attrib["latitude"]            
+            lng = point_node.attrib["longitude"]
             coordinates.append(Coordinates(lat,lng))
         return coordinates
 
     def get_forecast_dates(self):
         forecast_dates = []
-        for start_time in self.root.iter("start-valid-time"):
-            time = start_time.text
+        for start_time_node in self.root.iter("start-valid-time"):
+            time = start_time_node.text
             dt = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S-07:00")
             forecast_dates.append(dt.date())
         return forecast_dates
 
     def get_weather_forecasts(self):
         weather_list= []
-        for forecast in self.root.iter("parameters"):
-            max_temps, min_temps = self.get_daily_temperatures(forecast)            
-            daily_conditions = self.get_daily_conditions(forecast)
+        for forecast_node in self.root.iter("parameters"):
+            max_temps, min_temps = self.get_daily_temperatures(forecast_node)            
+            daily_conditions = self.get_daily_conditions(forecast_node)
             daily_weather = self.munge_daily_weather(max_temps, min_temps, daily_conditions)
             weather_list.append(daily_weather)
         return weather_list
 
-    def get_daily_temperatures(self, forecast):
+    def get_daily_temperatures(self, forecast_node):
         max_temps = []
         min_temps = []
-        for temperature_set in forecast.iter("temperature"):
-            if temperature_set.attrib["type"] == "maximum":
-                for daily_max in temperature_set.iter("value"):
-                    max_temps.append(int(daily_max.text))
+        for temperature_node in forecast_node.iter("temperature"):
+            if temperature_node.attrib["type"] == "maximum":
+                for daily_max_node in temperature_node.iter("value"):
+                    max_temps.append(int(daily_max_node.text))
             else:
-                for daily_min in temperature_set.iter("value"):
-                    min_temps.append(int(daily_min.text))
+                for daily_min_node in temperature_node.iter("value"):
+                    min_temps.append(int(daily_min_node.text))
         return max_temps, min_temps
 
-    def get_daily_conditions(self, forecast):
+    def get_daily_conditions(self, forecast_node):
         daily_conditions = []
-        for daily_condition in forecast.iter("weather-conditions"):
-            daily_conditions.append(daily_condition.attrib["weather-summary"])
+        for daily_condition_node in forecast_node.iter("weather-conditions"):
+            daily_conditions.append(daily_condition_node.attrib["weather-summary"])
         return daily_conditions
 
     def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
