@@ -37,11 +37,8 @@ def build_noaa_url(lat, lng, lat_distance, lng_distance, resolution):
 # TODO: make this a member func of forecast_grid?
 def print_forecast(forecast_grid):
     for forecast in forecast_grid:
-        print "Forecast for Lat:%s, Lon:%s" % (forecast.coordinates.lat, forecast.coordinates.lng)
-        for day, weather in forecast.daily_weather.items():
-            print "%s: High %s, Low %s, Condition %s " % (str(day), weather.high, weather.low, weather.condition) 
+        print forecast
         print "\n"
         
-
 if __name__ == "__main__":
     main()

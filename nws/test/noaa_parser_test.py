@@ -63,6 +63,7 @@ class TestForecast(unittest.TestCase):
 
     def test_static_dwml_contains_forecast_for_multiple_points(self):
         self.assertEqual(len(self.forecasts), 9)
+
 if __name__ == '__main__':
     unittest.main(exit=False)
    

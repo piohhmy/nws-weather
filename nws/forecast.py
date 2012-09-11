@@ -21,6 +21,11 @@ class Forecast:
         self.daily_weather = {}
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
+    def __str__(self):
+        return_str =  "Forecast for Lat:%s, Lon:%s" % (self.coordinates.lat, self.coordinates.lng)
+        for day, weather in self.daily_weather.items():
+            return_str +=  "\n%s: High %s, Low %s, Condition %s " % (str(day), weather.high, weather.low, weather.condition) 
+        return return_str
 
 
 class Weather:
