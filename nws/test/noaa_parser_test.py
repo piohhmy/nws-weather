@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import datetime
-import dwml_parser
+from nws import dwml_parser
 import unittest
-from forecast import *
+from nws.forecast import *
 """
 Point 1 data from sample_grid_response.xml
 

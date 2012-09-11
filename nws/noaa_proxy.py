@@ -4,8 +4,8 @@ import urllib2
 import urllib
 import datetime
 import logging
-import dwml_parser
-from forecast import *
+from nws import dwml_parser
+from nws.forecast import *
 
 def main():
     dwml = request_dwml_grid(45.5508, -122.738, 50.0, 50.0, 50.0)

@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as ET
 import datetime
-from forecast import *
+from nws.forecast import *
 
 class DWML_Parser:
     def __init__(self, dwml):
@@ -46,10 +46,12 @@ class DWML_Parser:
         for temperature_node in forecast_node.iter("temperature"):
             if temperature_node.attrib["type"] == "maximum":
                 for daily_max_node in temperature_node.iter("value"):
-                    max_temps.append(int(daily_max_node.text))
+                    if daily_max_node.text is not None:
+                        max_temps.append(int(daily_max_node.text))
             else:
                 for daily_min_node in temperature_node.iter("value"):
-                    min_temps.append(int(daily_min_node.text))
+                    if daily_min_node.text is not  None:
+                        min_temps.append(int(daily_min_node.text))
         return max_temps, min_temps
 
     def get_daily_conditions(self, forecast_node):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from forecast import *
+from nws.forecast import *
 import unittest
 class TestForecast(unittest.TestCase):
     def test_add_daily_forecast(self):
