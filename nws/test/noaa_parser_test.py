@@ -3,6 +3,7 @@ import datetime
 from nws import dwml_parser
 import unittest
 from nws.forecast import *
+import json
 """
 Point 1 data from sample_grid_response.xml
 
@@ -52,17 +53,21 @@ class TestForecast(unittest.TestCase):
         self.assertIsInstance(self.forecasts[0], Forecast)
 
     def test_static_dwml_contains_weather_condition_for_date(self):
-        requested_date = datetime.date(2012, 8, 31)
+        requested_date = datetime.date(2012, 8, 31).isoformat()
         self.assertIsInstance(self.forecasts[0].daily_weather[requested_date], Weather)
 
     def test_static_dwml_contains_correct_weather_data(self):
-        requested_date = datetime.date(2012, 8, 31)
+        requested_date = datetime.date(2012, 8, 31).isoformat()
         actual_weather = self.forecasts[0].daily_weather[requested_date]
         expected_weather = Weather(78, 45, "Mostly Sunny")
         self.assertEqual(actual_weather, expected_weather) 
 
     def test_static_dwml_contains_forecast_for_multiple_points(self):
         self.assertEqual(len(self.forecasts), 9)
+
+    def test_json_serialization_from_forecast_grid(self):
+        print json.dumps(self.forecasts, sort_keys=True, indent=4,
+                cls=ForecastSerializer)
 
 if __name__ == '__main__':
     unittest.main(exit=False)

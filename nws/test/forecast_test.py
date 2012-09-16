@@ -2,6 +2,8 @@
 
 from nws.forecast import *
 import unittest
+import json
+
 class TestForecast(unittest.TestCase):
     def test_add_daily_forecast(self):
         forecast = Forecast(Coordinates(127.13, 23.53))
@@ -9,6 +11,12 @@ class TestForecast(unittest.TestCase):
         forecast.daily_weather[datetime.date.today()] = todays_weather
         self.assertEqual(forecast.daily_weather[datetime.date.today()], todays_weather)
     
+    def test_forecast_to_json(self):
+        forecast = Forecast(Coordinates(127.13, 23.53))
+        todays_weather = Weather("70", "40", "sunny")
+        forecast.daily_weather[datetime.date.today().isoformat()] = todays_weather
+
+        print json.dumps(forecast, cls=ForecastSerializer)
 
 class TestCoordinates(unittest.TestCase):
     def setUp(self):

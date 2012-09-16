@@ -28,7 +28,7 @@ class DWML_Parser:
         for start_time_node in self.root.iter("start-valid-time"):
             time = start_time_node.text
             dt = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S-07:00")
-            forecast_dates.append(dt.date())
+            forecast_dates.append(dt.date().isoformat())
         return forecast_dates
 
     def get_weather_forecasts(self):
