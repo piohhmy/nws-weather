@@ -13,7 +13,7 @@ def main():
     forecast_grid = parser.generate_forecast_grid()
     print_forecast(forecast_grid)
 
-def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution):
+def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution=50):
     url = build_noaa_url(lat, lng, lat_distance, lng_distance, resolution)
     f = urllib2.urlopen(url)
     dwml = f.read()

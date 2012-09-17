@@ -1,0 +1,5 @@
+bottle==0.10.11
+distribute==0.6.28
+mock==1.0b1
+nose==1.2.1
+wsgiref==0.1.2

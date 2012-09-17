@@ -4,6 +4,7 @@ from nws import dwml_parser
 import unittest
 from nws.forecast import *
 import json
+import os
 """
 Point 1 data from sample_grid_response.xml
 
@@ -41,7 +42,8 @@ Point 1 data from sample_grid_response.xml
 """
 class TestForecast(unittest.TestCase):
     def setUp(self):
-        f = open('sample_grid_response.xml')	
+        curr_dir = os.path.dirname(os.path.realpath(__file__)) 
+        f = open(curr_dir + '/sample_grid_response.xml')	
         dwml = f.read()
         parser = dwml_parser.DWML_Parser(dwml)
         self.forecasts = parser.generate_forecast_grid()
