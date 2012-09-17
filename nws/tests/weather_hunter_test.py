@@ -11,18 +11,26 @@ import time
 import os
 
 class TestWeatherHunter(unittest.TestCase):
-    def test_api(self):
-        thread.start_new_thread(nws.weather_hunter.start_server, ())
+    def setUp(self):
+        nws.weather_hunter.app.config['TESTING'] = True
+        self.app = nws.weather_hunter.app.test_client()
         curr_dir = os.path.dirname(os.path.realpath(__file__))
         f = open(curr_dir + '/sample_grid_response.xml')	
         dwml = f.read()
-        time.sleep(.01)
-        mock_dwml_request = mock.Mock(return_value=dwml)
-        nws.noaa_proxy.request_dwml_grid = mock_dwml_request
-        url = "http://localhost:8080/weatherhunter/gridlist.svc?lat=127.13&lng=23.53&distance=100"
-        urllib.urlopen(url)
+        self.mock_noaa_proxy_dwml_request = mock.Mock(return_value=dwml)
+        nws.noaa_proxy.request_dwml_grid = self.mock_noaa_proxy_dwml_request
 
-        mock_dwml_request.assert_called_with(127.13, 23.53, 100, 100) 
-        
+    def test_api_calls(self):
+        route = "/weatherhunter/gridlist.svc?lat=127.13&lng=23.53&distance=100"
+        rv = self.app.get(route)
+
+        self.mock_noaa_proxy_dwml_request.assert_called_with(127.13, 23.53, 100, 100) 
+
+    def test_api_returns_json(self):
+        route = "/weatherhunter/gridlist.svc?lat=127.13&lng=23.53&distance=100"
+        rv = self.app.get(route)
+
+        self.assertEqual(rv.headers['content-type'], "application/json")
+
 if __name__ == '__main__':
     unittest.main(exit=False)

@@ -1,4 +1,6 @@
-bottle==0.10.11
+Flask==0.9
+Jinja2==2.6
+Werkzeug==0.8.3
 distribute==0.6.28
 mock==1.0b1
 nose==1.2.1
