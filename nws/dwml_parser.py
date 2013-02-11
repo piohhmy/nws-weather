@@ -18,7 +18,7 @@ class DWML_Parser:
     def get_coordinate_list(self):
         coordinates = []
         for point_node in self.root.iter("point"):
-            lat = point_node.attrib["latitude"]            
+            lat = point_node.attrib["latitude"]
             lng = point_node.attrib["longitude"]
             coordinates.append(Coordinates(lat,lng))
         return coordinates
@@ -27,14 +27,16 @@ class DWML_Parser:
         forecast_dates = []
         for start_time_node in self.root.iter("start-valid-time"):
             time = start_time_node.text
-            dt = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S-07:00")
+            excess_time_info_index = time.rfind('-')
+            time = time[0:excess_time_info_index]
+            dt = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
             forecast_dates.append(dt.date().isoformat())
         return forecast_dates
 
     def get_weather_forecasts(self):
         weather_list= []
         for forecast_node in self.root.iter("parameters"):
-            max_temps, min_temps = self.get_daily_temperatures(forecast_node)            
+            max_temps, min_temps = self.get_daily_temperatures(forecast_node)
             daily_conditions = self.get_daily_conditions(forecast_node)
             daily_weather = self.munge_daily_weather(max_temps, min_temps, daily_conditions)
             weather_list.append(daily_weather)
