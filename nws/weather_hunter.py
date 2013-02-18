@@ -26,12 +26,11 @@ def sun():
     lat = float(flask.request.args.get("lat"))
     lng = float(flask.request.args.get("lng"))
     distance = int(flask.request.args.get("distance"))
-    days_from_today = flask.request.args.get("distance")
+    days_from_today = flask.request.args.get("days_from_today")
         
     dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance)
     parser = DWML_Parser(dwml)
     forecast_grid = parser.generate_forecast_grid()
-
     if days_from_today:
         days_from_today = int(days_from_today)
         requested_date = datetime.date.today() + datetime.timedelta(days=days_from_today)
