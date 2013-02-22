@@ -59,7 +59,10 @@ class DWML_Parser:
     def get_daily_conditions(self, forecast_node):
         daily_conditions = []
         for daily_condition_node in forecast_node.iter("weather-conditions"):
-            daily_conditions.append(daily_condition_node.attrib["weather-summary"])
+            if "weather-summary" in daily_condition_node.attrib:
+                daily_conditions.append(daily_condition_node.attrib["weather-summary"])
+            else:
+                break
         return daily_conditions
 
     def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
