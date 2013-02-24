@@ -1,7 +1,10 @@
 import datetime
 
 def sun_in_forecast(forecast):
-    return bool([weather for weather in forecast.daily_weather.values() if "Sunny" in weather.condition])
+    return bool([weather for weather in forecast.daily_weather.values() if condition_is_sunny(weather.condition)])
+
+def condition_is_sunny(condition):
+    return any(map(condition.find, ["Sunny", "Mostly Cloudy", "Partly Cloudy"]))
 
 def sun_in_forecast_on_date(forecast, date):
     if date.isoformat() in forecast.daily_weather:

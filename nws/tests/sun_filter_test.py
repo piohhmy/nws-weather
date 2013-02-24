@@ -57,4 +57,18 @@ class TestSunFilter():
         filtered_forecasts = filters.filter_by_sun([forecast])
         assert forecast in filtered_forecasts
 
+    def test_filter_with_partly_cloudy(self):
+        sun_weather = Weather(70, 40, "Partly Cloudy")
+        cloud_weather = Weather(70, 40, "Cloudy")
+
+        forecast = Forecast(Coordinates(127.13, 23.53))
+        today = datetime.date.today()
+        tomorrow = today + datetime.timedelta(days=1)
+        forecast.daily_weather[today.isoformat()] = cloud_weather
+        forecast.daily_weather[tomorrow.isoformat()] = sun_weather
+
+        filtered_forecasts = filters.filter_by_sun([forecast])
+        assert forecast in filtered_forecasts
+
+
 
