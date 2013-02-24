@@ -15,7 +15,7 @@ class TestSunFilter():
 
         filtered_forecasts = filters.filter_by_sun([sun_forecast, rain_forecast])
         assert sun_forecast in filtered_forecasts
-        assert rain_weather not in filtered_forecasts
+        assert rain_forecast not in filtered_forecasts
 
     def test_filter_with_multiple_dates(self):
         sun_weather = Weather(70, 40, "Sunny")
@@ -69,6 +69,19 @@ class TestSunFilter():
 
         filtered_forecasts = filters.filter_by_sun([forecast])
         assert forecast in filtered_forecasts
+
+
+    def test_cloudy_forecast_is_not_kept(self):
+        cloud_forecast = Forecast(Coordinates(127.13, 23.53))
+
+        cloud_weather = Weather(70, 40, "Cloudy")
+        cloud_forecast.daily_weather[datetime.date.today()] = cloud_weather
+
+        filtered_forecasts = filters.filter_by_sun([cloud_forecast])
+        assert cloud_forecast not in filtered_forecasts
+
+    def test_condition_is_sunny(self):
+        assert not filters.condition_is_sunny("Rain")
 
 
 
