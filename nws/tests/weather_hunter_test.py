@@ -24,7 +24,7 @@ class TestWeatherHunter(unittest.TestCase):
         route = "/weatherhunter/v1/gridlist?lat=127.13&lng=23.53&distance=100"
         rv = self.app.get(route)
 
-        self.mock_noaa_proxy_dwml_request.assert_called_with(127.13, 23.53, 100, 100)
+        self.mock_noaa_proxy_dwml_request.assert_called_with(127.13, 23.53, 100, 100, 50)
 
     def test_gridlist_returns_json(self):
         route = "/weatherhunter/v1/gridlist?lat=127.13&lng=23.53&distance=100"

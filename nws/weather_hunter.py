@@ -14,8 +14,12 @@ def grid_list():
     lat = float(flask.request.args.get("lat"))
     lng = float(flask.request.args.get("lng"))
     distance = int(flask.request.args.get("distance"))
-
-    dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance)
+    resolution = flask.request.args.get("resolution")
+    if resolution:
+        resolution = int(resolution)
+    else:
+        resolution = 50
+    dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance, resolution)
     parser = DWML_Parser(dwml)
     forecast_grid = parser.generate_forecast_grid()
     return_content = json.dumps(forecast_grid, cls=forecast.ForecastSerializer)
@@ -27,8 +31,13 @@ def sun():
     lng = float(flask.request.args.get("lng"))
     distance = int(flask.request.args.get("distance"))
     days_from_today = flask.request.args.get("days_from_today")
-        
-    dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance)
+    resolution = flask.request.args.get("resolution")
+    if resolution:
+        resolution = int(resolution)
+    else:
+        resolution = 50
+
+    dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance, resolution)
     parser = DWML_Parser(dwml)
     forecast_grid = parser.generate_forecast_grid()
     if days_from_today:
