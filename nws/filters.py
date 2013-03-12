@@ -19,7 +19,6 @@ def filter_by_sun(forecast_list):
 
 
 def filter_by_sun_on_date(forecast_list, date):
-    print forecast_list[0].daily_weather
     return [forecast for forecast in forecast_list if sun_in_forecast_on_date(forecast, date)]
 
 

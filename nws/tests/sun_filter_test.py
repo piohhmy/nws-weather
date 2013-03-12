@@ -1,6 +1,7 @@
 from nws.forecast import Forecast, Weather, Coordinates
 from nws import filters
 import datetime
+from nose.tools import assert_equals
 
 class TestSunFilter():
     def test_sunny_forecast_is_kept(self):
@@ -83,5 +84,16 @@ class TestSunFilter():
     def test_condition_is_sunny(self):
         assert not filters.condition_is_sunny("Rain")
 
+    def test_filter_with_partly_sunny(self):
+        sun_weather = Weather(70, 40, "Partly Sunny")
+        cloud_weather = Weather(70, 40, "Mostly Cloudy")
 
+        forecast = Forecast(Coordinates(127.13, 23.53))
+        today = datetime.date.today()
+        tomorrow = today + datetime.timedelta(days=1)
+        forecast.daily_weather[today.isoformat()] = cloud_weather
+        forecast.daily_weather[tomorrow.isoformat()] = sun_weather
 
+        filtered_forecasts = filters.filter_by_sun_on_date([forecast], today)
+        assert forecast in filtered_forecasts
+        assert_equals (forecast.daily_weather[tomorrow.isoformat()].condition, "Partly Sunny")
