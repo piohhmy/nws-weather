@@ -13,6 +13,7 @@ app = flask.Flask(__name__)
 def grid_list():
     lat = float(flask.request.args.get("lat"))
     lng = float(flask.request.args.get("lng"))
+    days_from_today = flask.request.args.get("days_from_today")
     distance = int(flask.request.args.get("distance"))
     resolution = flask.request.args.get("resolution")
     if resolution:
@@ -22,6 +23,10 @@ def grid_list():
     dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance, resolution)
     parser = DWML_Parser(dwml)
     forecast_grid = parser.generate_forecast_grid()
+    if days_from_today:
+        days_from_today = int(days_from_today)
+        requested_date = datetime.date.today() + datetime.timedelta(days=days_from_today)
+        forecast_grid = filters.filter_on_date(forecast_grid, requested_date)
     return_content = json.dumps(forecast_grid, cls=forecast.ForecastSerializer)
     return flask.Response(return_content, mimetype='application/json')
 
