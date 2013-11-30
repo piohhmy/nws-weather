@@ -51,23 +51,23 @@ def grid_list2():
     width = nwCoord.miles_from(neCoord)
     logging.info('miles from nw pt to ne pt: %s', width)
     area = length * width
-    required_resolution = width/math.sqrt(points*width/length)
-    logging.info('required resolution: %s', required_resolution)
+    resolution = math.sqrt(length*width/points)*3
+    logging.info('required resolution: %s', resolution)
 
-    resolution = 5
     while True:
         dwml_coords = noaa_proxy.request_latlong_list(lat1, lng1, lat2, lng2, resolution)
         coords = dwml_parser.latlonlist_transform(dwml_coords)
         resolution = math.ceil(resolution * 1.5)
         if len(coords) < 200:
             break
+        logging.info('too many points: %s, decreasing resolution to: %s', len(coords), resolution)
 
     logging.info('num of coords: %s', len(coords))
 
     cached_forecasts = []
     missing_forecasts = []
     for coord in coords:
-        cached_forecast = cache_repo.find(coord, required_resolution/2)
+        cached_forecast = cache_repo.find(coord, resolution/2)
         if cached_forecast:
             cached_forecasts.append(cached_forecast)
         else:
