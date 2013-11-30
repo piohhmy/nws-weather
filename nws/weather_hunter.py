@@ -3,17 +3,18 @@ from nws import noaa_proxy
 from nws.dwml_parser import DWML_Parser
 from nws import dwml_parser
 from nws import forecast
+from nws.forecast import Coordinates
 from nws import filters
 from nws import mongo_cache as cache_repo
 import json
 import os
 import datetime
-import math
 import logging
+import math
 
 app = flask.Flask(__name__)
 
-logging.basicConfig(filename='weatherhunter.log', level=logging.DEBUG)
+logging.basicConfig(filename='weatherhunter.log', level=logging.INFO)
 
 @app.route("/weatherhunter/v1/gridlist")
 def grid_list():
@@ -33,20 +34,35 @@ def grid_list():
 
 @app.route("/weatherhunter/v2/gridlist")
 def grid_list2():
+
     lat1 = float(flask.request.args.get("lat1"))
     lng1 = float(flask.request.args.get("lng1"))
     lat2 = float(flask.request.args.get("lat2"))
     lng2 = float(flask.request.args.get("lng2"))
     points = int(flask.request.args.get("points"))
 
-    length = miles_between(lat1, lng1, lat2, lng2)
-    width = miles_between(lat1, lng1, lat2, lng2)
-    required_resolution = length * width / points
+    nwCoord = Coordinates(lat1,lng1)
+    seCoord = Coordinates(lat2, lng2)
+    neCoord = Coordinates(lat1, lng2)
+    swCoord = Coordinates(lat2, lng1)
 
-    dwml_coords = noaa_proxy.request_latlong_list(lat1, lng1, lat2, lng2, required_resolution)
-    coords = dwml_parser.latlonlist_transform(dwml_coords)
+    length = nwCoord.miles_from(swCoord)
+    logging.info('miles from nw pt to sw pt: %s', length)
+    width = nwCoord.miles_from(neCoord)
+    logging.info('miles from nw pt to ne pt: %s', width)
+    area = length * width
+    required_resolution = width/math.sqrt(points*width/length)
+    logging.info('required resolution: %s', required_resolution)
 
-    logging.info('coords: %s', coords)
+    resolution = 5
+    while True:
+        dwml_coords = noaa_proxy.request_latlong_list(lat1, lng1, lat2, lng2, resolution)
+        coords = dwml_parser.latlonlist_transform(dwml_coords)
+        resolution = resolution * 2
+        if len(coords) < 200:
+            break
+
+    logging.info('num of coords: %s', len(coords))
 
     cached_forecasts = []
     missing_forecasts = []
@@ -61,7 +77,7 @@ def grid_list2():
     logging.info('cached coords: %s', cached_forecasts)
 
     new_forecast_dwml = noaa_proxy.request_dwml_grid_points(missing_forecasts)
-    logging.info('dwml new forecasts: %s', new_forecast_dwml)
+    logging.debug('dwml new forecasts: %s', new_forecast_dwml)
     parser = DWML_Parser(new_forecast_dwml)
     new_forecasts = parser.generate_forecast_grid()
     logging.info('new forecasts: %s', new_forecasts)
@@ -103,39 +119,7 @@ def start_server():
     app.debug = True
     app.run(host='0.0.0.0', port=port)
 
-def miles_between(lat1, long1, lat2, long2):
-    earth_radius_miles = 3960
-    return distance_on_unit_sphere(float(lat1), float(long1), float(lat2), float(long2))  * earth_radius_miles
 
-
-def distance_on_unit_sphere(lat1, long1, lat2, long2):
-    # Convert latitude and longitude to
-    # spherical coordinates in radians.
-    degrees_to_radians = math.pi/180.
-
-    # phi = 90 - latitude
-    phi1 = (90.0 - lat1)*degrees_to_radians
-    phi2 = (90.0 - lat2)*degrees_to_radians
-
-    # theta = longitude
-    theta1 = long1*degrees_to_radians
-    theta2 = long2*degrees_to_radians
-
-    # Compute spherical distance from spherical coordinates.
-
-    # For two locations in spherical coordinates
-    # (1, theta, phi) and (1, theta, phi)
-    # cosine( arc length ) =
-    #    sin phi sin phi' cos(theta-theta') + cos phi cos phi'
-    # distance = rho * arc length
-
-    cos = (math.sin(phi1)*math.sin(phi2)*math.cos(theta1 - theta2) +
-           math.cos(phi1)*math.cos(phi2))
-    arc = math.acos( cos )
-
-    # Remember to multiply arc by the radius of the earth
-    # in your favorite set of units to get length.
-    return arc
 
 if __name__ == "__main__":
     start_server()

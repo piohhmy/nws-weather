@@ -3,11 +3,16 @@
 import unittest
 import datetime
 import json
+import math
 
 class Coordinates:
     def __init__(self, lat, lng):      
         self.lat = lat
         self.lng = lng
+
+    def miles_from(self, other):
+        earth_radius_miles = 3960
+        return distance_on_unit_sphere(self.lat, self.lng, other.lat, other.lng)  * earth_radius_miles
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__)
@@ -56,3 +61,33 @@ class Weather:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
+
+def distance_on_unit_sphere(lat1, long1, lat2, long2):
+    # Convert latitude and longitude to
+    # spherical coordinates in radians.
+    degrees_to_radians = math.pi/180.
+
+    # phi = 90 - latitude
+    phi1 = (90.0 - lat1)*degrees_to_radians
+    phi2 = (90.0 - lat2)*degrees_to_radians
+
+    # theta = longitude
+    theta1 = long1*degrees_to_radians
+    theta2 = long2*degrees_to_radians
+
+    # Compute spherical distance from spherical coordinates.
+
+    # For two locations in spherical coordinates
+    # (1, theta, phi) and (1, theta, phi)
+    # cosine( arc length ) =
+    #    sin phi sin phi' cos(theta-theta') + cos phi cos phi'
+    # distance = rho * arc length
+
+    cos = (math.sin(phi1)*math.sin(phi2)*math.cos(theta1 - theta2) +
+           math.cos(phi1)*math.cos(phi2))
+    arc = math.acos( cos )
+
+    # Remember to multiply arc by the radius of the earth
+    # in your favorite set of units to get length.
+    return arc
