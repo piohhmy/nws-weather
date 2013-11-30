@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import datetime
 from nws import dwml_parser
+from nws.forecast import Coordinates
 import unittest
 from nws.forecast import *
+from nose.tools import *
 import json
 import os
 """
@@ -42,8 +44,8 @@ Point 1 data from sample_grid_response.xml
 """
 class TestForecast(unittest.TestCase):
     def setUp(self):
-        curr_dir = os.path.dirname(os.path.realpath(__file__)) 
-        f = open(curr_dir + '/sample_grid_response.xml')	
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        f = open(curr_dir + '/sample_grid_response.xml')
         dwml = f.read()
         parser = dwml_parser.DWML_Parser(dwml)
         self.forecasts = parser.generate_forecast_grid()
@@ -62,7 +64,7 @@ class TestForecast(unittest.TestCase):
         requested_date = datetime.date(2012, 8, 31).isoformat()
         actual_weather = self.forecasts[0].daily_weather[requested_date]
         expected_weather = Weather(78, 45, "Mostly Sunny")
-        self.assertEqual(actual_weather, expected_weather) 
+        self.assertEqual(actual_weather, expected_weather)
 
     def test_static_dwml_contains_forecast_for_multiple_points(self):
         self.assertEqual(len(self.forecasts), 9)
@@ -71,6 +73,26 @@ class TestForecast(unittest.TestCase):
         print json.dumps(self.forecasts, sort_keys=True, indent=4,
                 cls=ForecastSerializer)
 
+class TestLatLngList(unittest.TestCase):
+    def test_1_coord_returns_list_of_pts(self):
+        sample_data1 =\
+        """<dwml xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="http://graphical.weather.gov/xml/DWMLgen/schema/DWML.xsd">
+        <latLonList>
+        34.986638,-82.027411
+        </latLonList>
+        </dwml>"""
+        result = dwml_parser.latlonlist_transform(sample_data1)
+        assert_equal(result, [Coordinates(34.986638,-82.027411)])
+
+    def test_many_coords_returns_list_of_pts(self):
+        sample_data1 =\
+        """<dwml xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="http://graphical.weather.gov/xml/DWMLgen/schema/DWML.xsd">
+        <latLonList>
+        34.986638,-82.02741 35.120891,-82.011661 35.255084,-81.9958721
+        </latLonList>
+        </dwml>"""
+        result = dwml_parser.latlonlist_transform(sample_data1)
+        assert_equal(result, [Coordinates(34.986638,-82.02741), Coordinates(35.120891,-82.011661), Coordinates(35.255084,-81.9958721)])
 if __name__ == '__main__':
     unittest.main(exit=False)
-   
+

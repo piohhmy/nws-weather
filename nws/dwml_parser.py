@@ -4,6 +4,8 @@ import xml.etree.ElementTree as ET
 import datetime
 from nws.forecast import *
 
+
+
 class DWML_Parser:
     def __init__(self, dwml):
         self.root  = ET.fromstring(dwml)
@@ -79,3 +81,16 @@ class DWML_Parser:
                forecast.daily_weather[start_date] = weather_per_day
             forecast_grid.append(forecast)
         return forecast_grid
+
+def transform_latlong_str(latlon):
+    lat,lng = latlon.split(',')
+    return Coordinates(float(lat), float(lng))
+
+
+def latlonlist_transform(dwml):
+    et = ET.fromstring(dwml)
+    elem = et.find('latLonList').text.strip()
+    coord_pairs = elem.split(' ')
+    lat_lon_list = map(transform_latlong_str, coord_pairs)
+    return lat_lon_list
+

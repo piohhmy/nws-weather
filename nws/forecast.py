@@ -15,6 +15,13 @@ class Coordinates:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __str__(self):
+        return "{},{}".format(self.lat, self.lng)
+
+    def __repr__(self):
+        return "{},{}".format(self.lat, self.lng)
+        
+
 class Forecast:
     def __init__(self, coordinates):
         self.coordinates = coordinates
