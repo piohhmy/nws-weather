@@ -58,7 +58,7 @@ def grid_list2():
     while True:
         dwml_coords = noaa_proxy.request_latlong_list(lat1, lng1, lat2, lng2, resolution)
         coords = dwml_parser.latlonlist_transform(dwml_coords)
-        resolution = resolution * 2
+        resolution = math.ceil(resolution * 1.5)
         if len(coords) < 200:
             break
 
