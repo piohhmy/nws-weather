@@ -24,4 +24,4 @@ def insert(new_forecast):
 	collection.insert(forecast_doc)
 
 def empty():
-	collection.drop()
+	collection.remove()
