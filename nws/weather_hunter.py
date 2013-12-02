@@ -46,12 +46,12 @@ def grid_list2():
     neCoord = Coordinates(lat1, lng2)
     swCoord = Coordinates(lat2, lng1)
 
-    length = nwCoord.miles_from(swCoord)
-    logging.info('miles from nw pt to sw pt: %s', length)
-    width = nwCoord.miles_from(neCoord)
-    logging.info('miles from nw pt to ne pt: %s', width)
+    length = nwCoord.km_from(swCoord)
+    logging.info('km from nw pt to sw pt: %s', length)
+    width = nwCoord.km_from(neCoord)
+    logging.info('km from nw pt to ne pt: %s', width)
     area = length * width
-    resolution = math.sqrt(length*width/points)*3
+    resolution = math.sqrt(area/points)*1.5
     logging.info('required resolution: %s', resolution)
 
     while True:
@@ -67,22 +67,25 @@ def grid_list2():
     cached_forecasts = []
     missing_forecasts = []
     for coord in coords:
-        cached_forecast = cache_repo.find(coord, resolution/2)
+        cached_forecast = cache_repo.find(coord, (resolution*1000)/4)
         if cached_forecast:
             cached_forecasts.append(cached_forecast)
         else:
             missing_forecasts.append(coord)
 
-    logging.info('missing coords: %s', missing_forecasts)
-    logging.info('cached coords: %s', cached_forecasts)
+    logging.info('missing coords: %s', len(missing_forecasts))
+    logging.info('cached coords: %s', len(cached_forecasts))
 
-    new_forecast_dwml = noaa_proxy.request_dwml_grid_points(missing_forecasts)
-    logging.debug('dwml new forecasts: %s', new_forecast_dwml)
-    parser = DWML_Parser(new_forecast_dwml)
-    new_forecasts = parser.generate_forecast_grid()
-    logging.info('new forecasts: %s', new_forecasts)
-    for new_forecast in new_forecasts:
-        cache_repo.insert(new_forecast)
+    if missing_forecasts:
+        new_forecast_dwml = noaa_proxy.request_dwml_grid_points(missing_forecasts)
+        logging.debug('dwml new forecasts: %s', new_forecast_dwml)
+        parser = DWML_Parser(new_forecast_dwml)
+        new_forecasts = parser.generate_forecast_grid()
+        logging.info('new forecasts: %s', new_forecasts)
+        for new_forecast in new_forecasts:
+            cache_repo.insert(new_forecast)
+    else:
+        new_forecasts = []
 
     all_forecasts = new_forecasts + cached_forecasts
     return_content = json.dumps(all_forecasts, cls=forecast.ForecastSerializer)

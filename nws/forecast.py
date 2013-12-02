@@ -14,6 +14,10 @@ class Coordinates:
         earth_radius_miles = 3960
         return distance_on_unit_sphere(self.lat, self.lng, other.lat, other.lng)  * earth_radius_miles
 
+    def km_from(self, other):
+        earth_radius_km = 6371
+        return distance_on_unit_sphere(self.lat, self.lng, other.lat, other.lng)  * earth_radius_km
+
     def __eq__(self, other):
         return (isinstance(other, self.__class__)
                 and self.__dict__ == other.__dict__)
