@@ -11,6 +11,8 @@ import os
 import datetime
 import logging
 import math
+import geopy
+from geopy.distance import great_circle
 
 app = flask.Flask(__name__)
 
@@ -41,10 +43,70 @@ def grid_list2():
     lng2 = float(flask.request.args.get("lng2"))
     points = int(flask.request.args.get("points"))
 
-    nwCoord = Coordinates(lat1,lng1)
-    seCoord = Coordinates(lat2, lng2)
-    neCoord = Coordinates(lat1, lng2)
-    swCoord = Coordinates(lat2, lng1)
+    all_forecasts = hunt(Coordinates(lat1, lng1), Coordinates(lat2, lng2), points)
+
+    return_content = json.dumps(all_forecasts, cls=forecast.ForecastSerializer)
+    return flask.Response(return_content, mimetype='application/json')
+
+@app.route("/weatherhunter/v3/gridlist")
+def grid_list3():
+
+    lat1 = float(flask.request.args.get("lat1"))
+    lng1 = float(flask.request.args.get("lng1"))
+    lat2 = float(flask.request.args.get("lat2"))
+    lng2 = float(flask.request.args.get("lng2"))
+    points = int(flask.request.args.get("points"))
+
+    coords, distance_per_pt = calculate_points(lat1, lng1, lat2, lng2, points)
+
+    all_forecasts = retrieve_forecasts(coords, distance_per_pt)
+
+    print all_forecasts
+
+    return_content = json.dumps(all_forecasts, cls=forecast.ForecastSerializer)
+    return flask.Response(return_content, mimetype='application/json')
+
+def calculate_points(lat1, lng1, lat2, lng2, points):
+    ns_distance = great_circle((lat1, lng1), (lat2, lng1))
+    ew_distance = great_circle((lat1, lng1), (lat1, lng2))
+    print 'ns dist: %s, ew dist: %s' % (ns_distance.meters, ew_distance.meters)
+    area = ns_distance.meters * ew_distance.meters
+    print 'area %s' % area
+    distance_per_pt = math.sqrt(area/points)
+    print 'distance_per_pt: %s' % distance_per_pt
+    points_per_col = int(math.floor(ns_distance.meters/distance_per_pt))
+    points_per_row = int(math.floor(ew_distance.meters/distance_per_pt))
+    print 'points_per_col: %s' % points_per_col
+    print 'points_per_row: %s' % points_per_row
+    curr_pt = geopy.Point(lat1, lng1)
+    coords = [Coordinates(curr_pt.latitude, curr_pt.longitude)]
+    for x in range(points_per_row):
+        for x in range(points_per_col):
+            bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude), 
+                                        math.radians(lat2), math.radians(curr_pt.longitude))
+            curr_pt = great_circle().destination(curr_pt, bearing, distance_per_pt/1000)
+            coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
+
+        curr_pt = geopy.Point(lat1, curr_pt.longitude)
+        bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude), 
+                                    math.radians(curr_pt.latitude), math.radians(lng2))
+        curr_pt = great_circle().destination(curr_pt, bearing, distance_per_pt/1000)
+        coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
+    return coords, distance_per_pt
+
+
+def determine_bearing(lat1, lon1, lat2, lon2):
+    dLon = lon2 - lon1
+    y = math.sin(dLon) * math.cos(lat2)
+    x = math.cos(lat1)*math.sin(lat2) - math.sin(lat1)*math.cos(lat2)*math.cos(dLon)
+    brng = math.degrees(math.atan2(y, x))
+    return brng
+
+def hunt(coord1, coord2, points):
+    nwCoord = Coordinates(coord1.lat, coord1.lng)
+    seCoord = Coordinates(coord2.lat, coord2.lng)
+    neCoord = Coordinates(coord1.lat, coord2.lng)
+    swCoord = Coordinates(coord2.lat, coord1.lng) 
 
     length = nwCoord.km_from(swCoord)
     logging.info('km from nw pt to sw pt: %s', length)
@@ -55,7 +117,7 @@ def grid_list2():
     logging.info('required resolution: %s', resolution)
 
     while True:
-        dwml_coords = noaa_proxy.request_latlong_list(lat1, lng1, lat2, lng2, resolution)
+        dwml_coords = noaa_proxy.request_latlong_list(coord1.lat, coord1.lng, coord2.lat, coord2.lng, resolution)
         coords = dwml_parser.latlonlist_transform(dwml_coords)
         resolution = math.ceil(resolution * 1.5)
         if len(coords) < 200:
@@ -64,10 +126,13 @@ def grid_list2():
 
     logging.info('num of coords: %s', len(coords))
 
+    return retrieve_forecasts(coords, resolution)
+
+def retrieve_forecasts(coords, resolution):
     cached_forecasts = []
     missing_forecasts = []
     for coord in coords:
-        cached_forecast = cache_repo.find(coord, (resolution*1000)/4)
+        cached_forecast = cache_repo.find(coord, (resolution)/4)
         if cached_forecast:
             cached_forecasts.append(cached_forecast)
         else:
@@ -87,10 +152,7 @@ def grid_list2():
     else:
         new_forecasts = []
 
-    all_forecasts = new_forecasts + cached_forecasts
-    return_content = json.dumps(all_forecasts, cls=forecast.ForecastSerializer)
-
-    return flask.Response(return_content, mimetype='application/json')
+    return new_forecasts + cached_forecasts
 
 @app.route("/weatherhunter/v1/sun")
 def sun():
