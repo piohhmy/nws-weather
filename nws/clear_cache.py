@@ -3,10 +3,16 @@ from nws import weather_hunter
 from nws.forecast import Coordinates
 
 def main():
-	mongo_cache.empty()
-	coord1 = Coordinates(47.116020,-121.381148)
-	coord2 = Coordinates(43.932427,-123.942186)
-	#weather_hunter.hunt(coord1, coord2, 200)
+    mongo_cache.empty()
+    # Portland area
+    lat1=36.672531
+    lng1=-116.503419
+    lat2=40.231227
+    lng2=-113.942380
+    
+    points=150
+    coords, distance_per_pt = calculate_points(lat1, lng1, lat2, lng2, points)
+    all_forecasts = retrieve_forecasts(coords, distance_per_pt)
 
 if __name__ == '__main__':
-	main()
+    main()
