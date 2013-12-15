@@ -6,3 +6,4 @@ nose>=1.2.1
 wsgiref>=0.1.2
 pymongo
 geopy
+newrelic
