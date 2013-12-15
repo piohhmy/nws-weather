@@ -58,10 +58,7 @@ def grid_list3():
     points = int(flask.request.args.get("points"))
 
     coords, distance_per_pt = calculate_points(lat1, lng1, lat2, lng2, points)
-
     all_forecasts = retrieve_forecasts(coords, distance_per_pt)
-
-    print all_forecasts
 
     return_content = json.dumps(all_forecasts, cls=forecast.ForecastSerializer)
     return flask.Response(return_content, mimetype='application/json')
