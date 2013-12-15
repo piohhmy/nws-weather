@@ -31,7 +31,7 @@ def grid_list():
     dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance, resolution)
     parser = DWML_Parser(dwml)
     forecast_grid = parser.generate_forecast_grid()
-    return_content = json.dumps(forecast_grid, cls=forecast.ForecastSerializer)
+return_content = json.dumps(forecast_grid, cls=forecast.ForecastSerializer)
     return flask.Response(return_content, mimetype='application/json')
 
 @app.route("/weatherhunter/v2/gridlist")
@@ -138,7 +138,7 @@ def retrieve_forecasts(coords, resolution):
         logging.debug('dwml new forecasts: %s', new_forecast_dwml)
         parser = DWML_Parser(new_forecast_dwml)
         new_forecasts = parser.generate_forecast_grid()
-        logging.info('new forecasts: %s', new_forecasts)
+        logging.debug('new forecasts: %s', new_forecasts)
         for new_forecast in new_forecasts:
             cache_repo.insert(new_forecast)
     else:

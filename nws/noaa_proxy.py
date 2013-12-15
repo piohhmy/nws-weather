@@ -28,7 +28,7 @@ def request_dwml_grid(lat, lng, lat_distance, lng_distance, resolution=50):
 
 def request_dwml_grid_points(coords):
     url = build_noaa_url_for_weather_grid_points(coords)
-    logging.info("url: %s", url)
+    logging.debug("url: %s", url)
     try:
         f = urllib2.urlopen(url)
         dwml = f.read()
