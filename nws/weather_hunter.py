@@ -18,6 +18,11 @@ app = flask.Flask(__name__)
 
 logging.basicConfig(level=logging.INFO)
 
+@app.route("/")
+def index():
+    return flask.Response(json.dumps({'status':'ok'}), mimetype='application/json')
+
+
 @app.route("/weatherhunter/v1/gridlist")
 def grid_list():
     lat = float(flask.request.args.get("lat"))
@@ -31,7 +36,7 @@ def grid_list():
     dwml = noaa_proxy.request_dwml_grid(lat, lng, distance, distance, resolution)
     parser = DWML_Parser(dwml)
     forecast_grid = parser.generate_forecast_grid()
-return_content = json.dumps(forecast_grid, cls=forecast.ForecastSerializer)
+    return_content = json.dumps(forecast_grid, cls=forecast.ForecastSerializer)
     return flask.Response(return_content, mimetype='application/json')
 
 @app.route("/weatherhunter/v2/gridlist")
@@ -74,13 +79,13 @@ def calculate_points(lat1, lng1, lat2, lng2, points):
     coords = [Coordinates(curr_pt.latitude, curr_pt.longitude)]
     for x in range(points_per_row):
         for x in range(points_per_col):
-            bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude), 
+            bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
                                         math.radians(lat2), math.radians(curr_pt.longitude))
             curr_pt = great_circle().destination(curr_pt, bearing, distance_per_pt/1000)
             coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
 
         curr_pt = geopy.Point(lat1, curr_pt.longitude)
-        bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude), 
+        bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
                                     math.radians(curr_pt.latitude), math.radians(lng2))
         curr_pt = great_circle().destination(curr_pt, bearing, distance_per_pt/1000)
         coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
@@ -98,7 +103,7 @@ def hunt(coord1, coord2, points):
     nwCoord = Coordinates(coord1.lat, coord1.lng)
     seCoord = Coordinates(coord2.lat, coord2.lng)
     neCoord = Coordinates(coord1.lat, coord2.lng)
-    swCoord = Coordinates(coord2.lat, coord1.lng) 
+    swCoord = Coordinates(coord2.lat, coord1.lng)
 
     length = nwCoord.km_from(swCoord)
     logging.info('km from nw pt to sw pt: %s', length)
