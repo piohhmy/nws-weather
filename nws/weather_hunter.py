@@ -16,7 +16,7 @@ from geopy.distance import great_circle
 
 app = flask.Flask(__name__)
 
-logging.basicConfig(filename='weatherhunter.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 @app.route("/weatherhunter/v1/gridlist")
 def grid_list():
@@ -66,15 +66,10 @@ def grid_list3():
 def calculate_points(lat1, lng1, lat2, lng2, points):
     ns_distance = great_circle((lat1, lng1), (lat2, lng1))
     ew_distance = great_circle((lat1, lng1), (lat1, lng2))
-    print 'ns dist: %s, ew dist: %s' % (ns_distance.meters, ew_distance.meters)
     area = ns_distance.meters * ew_distance.meters
-    print 'area %s' % area
     distance_per_pt = math.sqrt(area/points)
-    print 'distance_per_pt: %s' % distance_per_pt
     points_per_col = int(math.floor(ns_distance.meters/distance_per_pt))
     points_per_row = int(math.floor(ew_distance.meters/distance_per_pt))
-    print 'points_per_col: %s' % points_per_col
-    print 'points_per_row: %s' % points_per_row
     curr_pt = geopy.Point(lat1, lng1)
     coords = [Coordinates(curr_pt.latitude, curr_pt.longitude)]
     for x in range(points_per_row):
