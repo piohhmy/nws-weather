@@ -5,10 +5,10 @@ from nws.forecast import Coordinates
 def main():
     mongo_cache.empty()
     # Portland area
-    lat1=36.672531
-    lng1=-116.503419
-    lat2=40.231227
-    lng2=-113.942380
+    lat1=44.185485
+    lng1=-123.942186
+    lat2=46.875841
+    lng2=-121.381148
     
     points=150
     coords, distance_per_pt = weather_hunter.calculate_points(lat1, lng1, lat2, lng2, points)
