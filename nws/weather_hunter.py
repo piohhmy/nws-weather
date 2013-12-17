@@ -78,6 +78,7 @@ def calculate_points(lat1, lng1, lat2, lng2, points):
     curr_pt = geopy.Point(lat1, lng1)
     coords = [Coordinates(curr_pt.latitude, curr_pt.longitude)]
     for x in range(points_per_row):
+        coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
         for x in range(points_per_col):
             bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
                                         math.radians(lat2), math.radians(curr_pt.longitude))
@@ -88,7 +89,7 @@ def calculate_points(lat1, lng1, lat2, lng2, points):
         bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
                                     math.radians(curr_pt.latitude), math.radians(lng2))
         curr_pt = great_circle().destination(curr_pt, bearing, distance_per_pt/1000)
-        coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
+
     return coords, distance_per_pt
 
 
