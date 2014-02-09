@@ -1,11 +1,11 @@
 from nose.tools import *
-from nws import mongo_cache.MongoRepo as cache_repo
+from nws.mongo_cache import MongoRepo as cache_repo
 from nws.forecast import Coordinates
 class TestMongoCache():
 	def test_find_with_no_match(self):
-		coord = Coordinates(23.12, 124.2) 
+		coord = Coordinates(23.12, 124.2)
 		resolution = 34
-		result = cache_repo.MongoRepo.find(coord, resolution)
+		result = cache_repo.find(coord, resolution)
 		assert_equal(result, None)
 
-	
+
