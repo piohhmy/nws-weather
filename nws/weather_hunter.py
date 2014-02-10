@@ -16,7 +16,7 @@ from geopy.distance import great_circle
 
 app = flask.Flask(__name__)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 @app.route("/")
 def index():
