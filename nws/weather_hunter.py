@@ -35,7 +35,7 @@ def grid_list3():
     all_forecasts = retrieve_forecasts(coords, meters_per_pt)
 
     return_content = json.dumps(all_forecasts, cls=forecast.ForecastSerializer)
-    logging.info('responses: %s', return_content)
+    logging.debug('responses: %s', return_content)
     return flask.Response(return_content, mimetype='application/json')
 
 def calculate_points(lat1, lng1, lat2, lng2, points):
@@ -75,8 +75,9 @@ def retrieve_forecasts(coords, resolution):
     cached_forecasts = []
     missing_forecasts = []
     for coord in coords:
-        cached_forecast = cache_repo.find(coord, (resolution)/4)
+        cached_forecast = cache_repo.find(coord, (resolution)*.95)
         if cached_forecast:
+            cached_forecast.coordinates = coord
             cached_forecasts.append(cached_forecast)
         else:
             missing_forecasts.append(coord)
