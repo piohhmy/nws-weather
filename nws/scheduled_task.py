@@ -1,7 +1,11 @@
 from nws import weather_hunter
 from nws.forecast import Coordinates
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 def main():
+    logging.info("Starting Scheduled Task")
     # Portland area
     cached_areas = [
        {'lat1':44.185485, 'lng1':-123.942186, 'lat2':46.875841, 'lng2':-121.381148},
@@ -21,6 +25,7 @@ def main():
     for area in cached_areas:
         coords, distance_per_pt = weather_hunter.calculate_points(points=points, **area)
         all_forecasts = weather_hunter.retrieve_forecasts(coords, distance_per_pt)
+    logging.info("Finished Scheduled Task")
 
 if __name__ == '__main__':
     main()
