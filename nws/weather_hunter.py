@@ -47,7 +47,7 @@ def calculate_points(lat1, lng1, lat2, lng2, points):
     points_per_row = int(math.floor(ew_distance.meters/meters_per_pt))
     curr_pt = geopy.Point(lat1, lng1)
     coords = [Coordinates(curr_pt.latitude, curr_pt.longitude)]
-    for x in range(points_per_row):
+    for x in range(points_per_row + 1):
         coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
         for x in range(points_per_col):
             bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
