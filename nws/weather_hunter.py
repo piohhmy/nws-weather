@@ -1,18 +1,18 @@
-import flask
-from nws import noaa_proxy
-from nws.dwml_parser import DWML_Parser
-from nws import dwml_parser
-from nws import forecast
-from nws.forecast import Coordinates
-from nws import filters
-from nws.mongo_cache import MongoRepo as cache_repo
-import json
 import os
-import datetime
-import logging
+import json
 import math
+import logging
+import datetime
+import flask
 import geopy
 from geopy.distance import great_circle
+from nws import filters
+from nws import forecast
+from nws import noaa_proxy
+from nws import dwml_parser
+from nws.forecast import Coordinates
+from nws.dwml_parser import DWML_Parser
+from nws.mongo_cache import MongoRepo as cache_repo
 
 app = flask.Flask(__name__)
 
@@ -20,11 +20,11 @@ logging.basicConfig(level=logging.INFO)
 
 @app.route("/")
 def index():
-    return flask.Response(json.dumps({'status':'ok'}), mimetype='application/json')
+    json_resp = json.dumps({'status':'ok'})
+    return flask.Response(json_resp, mimetype='application/json')
 
 @app.route("/weatherhunter/v3/gridlist")
 def grid_list3():
-
     lat1 = float(flask.request.args.get("lat1"))
     lng1 = float(flask.request.args.get("lng1"))
     lat2 = float(flask.request.args.get("lat2"))
@@ -43,25 +43,35 @@ def calculate_points(lat1, lng1, lat2, lng2, points):
     ew_distance = great_circle((lat1, lng1), (lat1, lng2))
     area = ns_distance.meters * ew_distance.meters
     meters_per_pt = math.sqrt(area/points)
-    points_per_col = int(math.floor(ns_distance.meters/meters_per_pt))
-    points_per_row = int(math.floor(ew_distance.meters/meters_per_pt))
-    curr_pt = geopy.Point(lat1, lng1)
-    coords = [Coordinates(curr_pt.latitude, curr_pt.longitude)]
-    for x in range(points_per_row + 1):
-        coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
-        for x in range(points_per_col):
-            bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
-                                        math.radians(lat2), math.radians(curr_pt.longitude))
-            curr_pt = great_circle().destination(curr_pt, bearing, meters_per_pt/1000)
-            coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
+    km_per_pt = meters_per_pt/1000
 
-        curr_pt = geopy.Point(lat1, curr_pt.longitude)
-        bearing = determine_bearing(math.radians(curr_pt.latitude), math.radians(curr_pt.longitude),
-                                    math.radians(curr_pt.latitude), math.radians(lng2))
-        curr_pt = great_circle().destination(curr_pt, bearing, meters_per_pt/1000)
+    points_per_col = int(math.floor(ew_distance.meters/meters_per_pt))
+    points_per_row = int(math.floor(ns_distance.meters/meters_per_pt))
+
+    curr_pt = geopy.Point(lat1, lng1)
+    coords = []
+    for x in xrange(points_per_row + 1):
+        row_start = curr_pt
+        for x in xrange(points_per_col + 1):
+            coords.append(Coordinates(curr_pt.latitude, curr_pt.longitude))
+            curr_pt = move_point_east(curr_pt, lng2, km_per_pt)
+        curr_pt = move_point_south(row_start, lat2, km_per_pt)
 
     return coords, meters_per_pt
 
+def move_point_south(curr_pt, southern_lat, km):
+    south_bearing = determine_bearing(math.radians(curr_pt.latitude), 
+                                      math.radians(curr_pt.longitude),
+                                      math.radians(southern_lat),
+                                      math.radians(curr_pt.longitude))
+    return great_circle().destination(curr_pt, south_bearing, km)
+
+def move_point_east(curr_pt, eastern_lng, km):
+    east_bearing = determine_bearing(math.radians(curr_pt.latitude),
+                                     math.radians(curr_pt.longitude),
+                                     math.radians(curr_pt.latitude), 
+                                     math.radians(eastern_lng))
+    return great_circle().destination(curr_pt, east_bearing, km)
 
 def determine_bearing(lat1, lon1, lat2, lon2):
     dLon = lon2 - lon1
