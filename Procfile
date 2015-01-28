@@ -1,1 +1,1 @@
-web: newrelic-admin run-program python nws/weather_hunter.py
+web: newrelic-admin run-program gunicorn nws.weather_hunter:app
