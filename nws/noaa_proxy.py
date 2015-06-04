@@ -4,8 +4,12 @@ import urllib2
 import urllib
 import datetime
 import logging
+import socket
 from nws import dwml_parser
 from nws.forecast import *
+
+timeout = 30
+socket.setdefaulttimeout(timeout)
 
 def main():
     dwml = request_dwml_grid(45.5508, -122.738, 100.0, 100.0, 20.0)
