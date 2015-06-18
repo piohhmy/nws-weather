@@ -1,5 +1,8 @@
 *.py[co]
 
+# Heroku
+*.env
+
 # Packages
 *.egg
 *.egg-info

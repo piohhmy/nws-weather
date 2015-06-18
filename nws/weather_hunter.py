@@ -1,10 +1,12 @@
 import os
 import json
 import math
-import logging
-import datetime
 import flask
 import geopy
+import rollbar
+import logging
+import datetime
+import rollbar.contrib.flask
 from geopy.distance import great_circle
 from nws import filters
 from nws import forecast
@@ -15,6 +17,14 @@ from nws.dwml_parser import DWML_Parser
 from nws.mongo_cache import MongoRepo as cache_repo
 
 app = flask.Flask(__name__)
+
+@app.before_first_request
+def init_rollbar():
+    rollbar.init(os.getenv('ROLLBAR_ACCESS_TOKEN'), 'weatherhunt_api',
+        root=os.path.dirname(os.path.realpath(__file__)),
+        allow_logging_basic_config=False)
+
+    flask.got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -60,7 +70,7 @@ def calculate_points(lat1, lng1, lat2, lng2, points):
     return coords, meters_per_pt
 
 def move_point_south(curr_pt, southern_lat, km):
-    south_bearing = determine_bearing(math.radians(curr_pt.latitude), 
+    south_bearing = determine_bearing(math.radians(curr_pt.latitude),
                                       math.radians(curr_pt.longitude),
                                       math.radians(southern_lat),
                                       math.radians(curr_pt.longitude))
@@ -69,7 +79,7 @@ def move_point_south(curr_pt, southern_lat, km):
 def move_point_east(curr_pt, eastern_lng, km):
     east_bearing = determine_bearing(math.radians(curr_pt.latitude),
                                      math.radians(curr_pt.longitude),
-                                     math.radians(curr_pt.latitude), 
+                                     math.radians(curr_pt.latitude),
                                      math.radians(eastern_lng))
     return great_circle().destination(curr_pt, east_bearing, km)
 

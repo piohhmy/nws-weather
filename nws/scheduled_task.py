@@ -1,11 +1,21 @@
+import sys
+import time
+import logging
+import rollbar
 from nws import weather_hunter
 from nws.forecast import Coordinates
-import logging
-import time
 
 logging.basicConfig(level=logging.INFO)
 
 def main():
+    try:
+        self._updateCache()
+    except:
+        rollbar.report_exc_info(sys.exc_info())
+        raise
+
+
+def _updateCache():
     logging.info("Starting Scheduled Task")
     # Portland area
     cached_areas = [
@@ -21,13 +31,12 @@ def main():
        {'lat1':42.564048, 'lng1':-122.771674, 'lat2':44.950919, 'lng2':-120.210635}
        ]
 
-
     points=150
     for area in cached_areas:
         coords, distance_per_pt = weather_hunter.calculate_points(points=points, **area)
         all_forecasts = weather_hunter.retrieve_forecasts(coords, distance_per_pt)
         time.sleep(1)
     logging.info("Finished Scheduled Task")
-
+ss
 if __name__ == '__main__':
     main()
