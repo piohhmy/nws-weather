@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as ET
 import datetime
-from nws.forecast import *
+from lib.forecast import Coordinates, Forecast, Weather
 
 
 
@@ -93,4 +93,3 @@ def latlonlist_transform(dwml):
     coord_pairs = elem.split(' ')
     lat_lon_list = map(transform_latlong_str, coord_pairs)
     return lat_lon_list
-

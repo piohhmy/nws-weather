@@ -1,5 +1,9 @@
 *.py[co]
 
+# Serverless
+nws/vendored
+nws/.serverless
+
 # Heroku
 *.env
 

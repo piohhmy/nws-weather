@@ -5,8 +5,7 @@ import urllib
 import datetime
 import logging
 import socket
-from nws import dwml_parser
-from nws.forecast import *
+from lib import dwml_parser
 
 timeout = 30
 socket.setdefaulttimeout(timeout)

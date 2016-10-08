@@ -1,5 +1,5 @@
 from pymongo import MongoClient, GEOSPHERE, ASCENDING
-from nws import forecast
+from lib import forecast
 import json
 import os
 import datetime
@@ -24,7 +24,7 @@ class MongoRepo(object):
 	@staticmethod
 	def insert(new_forecast):
 		daily_weather_doc = json.loads(json.dumps(new_forecast.daily_weather, cls=forecast.ForecastSerializer))
-		forecast_doc = {'createdAt': datetime.datetime.utcnow(), 
+		forecast_doc = {'createdAt': datetime.datetime.utcnow(),
 		                'loc':{
 		                   'type':'Point',
 		                   'coordinates':[float(new_forecast.coordinates.lng), float(new_forecast.coordinates.lat)]

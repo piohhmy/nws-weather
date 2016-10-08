@@ -1,0 +1,5 @@
+geopy==1.4.0
+newrelic==2.38.0.31
+pymongo==3.0.3
+requests==2.7.0
+rollbar==0.9.11
