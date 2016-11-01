@@ -24,6 +24,9 @@ def forecast(coord):
     logger.debug('dwml new forecasts: %s', new_forecast_dwml)
     parser = DWML_Parser(new_forecast_dwml)
     new_forecasts = parser.generate_forecast_grid()
-    logger.debug('new forecasts: %s', new_forecasts)
 
-    return json.dumps(new_forecasts, cls=ForecastSerializer)
+    return_content = json.dumps(new_forecasts, cls=ForecastSerializer)
+
+    logger.debug('new forecasts: %s', return_content)
+
+    return json.loads(return_content)
