@@ -19,7 +19,7 @@ provider:
   profile: nws-weather
   stage: dev
   region: us-west-2
-  timeout: 6
+  timeout: 15
   memory: 512
 
 # you can add statements to the Lambda function's IAM Role here
