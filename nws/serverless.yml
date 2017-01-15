@@ -54,6 +54,7 @@ functions:
       - http:
           path: weather/forecast
           method: get
+          integration: lambda
           request:
             template:
               application/json: >
