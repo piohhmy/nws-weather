@@ -73,6 +73,30 @@ class TestForecast(unittest.TestCase):
         print json.dumps(self.forecasts, sort_keys=True, indent=4,
                 cls=ForecastSerializer)
 
+class TestForecastWithNull(unittest.TestCase):
+    def setUp(self):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        f = open(curr_dir + '/sample_response_with_nulls.xml')
+        dwml = f.read()
+        parser = dwml_parser.DWML_Parser(dwml)
+        self.forecasts = parser.generate_forecast_grid()
+
+    def test_static_dwml_contains_weather_data_when_only_high_and_low_are_available(self):
+        requested_date = datetime.date(2017, 1, 30).isoformat()
+        actual_weather = self.forecasts[0].daily_weather[requested_date]
+        expected_weather = Weather(58, 41, None)
+        self.assertEqual(actual_weather, expected_weather)
+
+    def test_static_dwml_contains_weather_data_when_only_high_is_available(self):
+        requested_date = datetime.date(2017, 1, 31).isoformat()
+        actual_weather = self.forecasts[0].daily_weather[requested_date]
+        expected_weather = Weather(54, None, None)
+        self.assertEqual(actual_weather, expected_weather)
+
+    def test_json_serialization_from_forecast_grid(self):
+        print json.dumps(self.forecasts, sort_keys=True, indent=4,
+                cls=ForecastSerializer)
+
 class TestLatLngList(unittest.TestCase):
     def test_1_coord_returns_list_of_pts(self):
         sample_data1 =\
@@ -95,4 +119,3 @@ class TestLatLngList(unittest.TestCase):
         assert_equal(result, [Coordinates(34.986638,-82.02741), Coordinates(35.120891,-82.011661), Coordinates(35.255084,-81.9958721)])
 if __name__ == '__main__':
     unittest.main(exit=False)
-

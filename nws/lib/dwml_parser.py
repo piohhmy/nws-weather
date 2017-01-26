@@ -3,6 +3,7 @@
 import xml.etree.ElementTree as ET
 import datetime
 from lib.forecast import Coordinates, Forecast, Weather
+from itertools import izip_longest
 
 
 
@@ -16,7 +17,6 @@ class DWML_Parser:
         forecasts = self.get_weather_forecasts()
         return self.munge_forecast_grid(coordinates, forecast_dates, forecasts)
 
-    #TODO: make these functions private
     def get_coordinate_list(self):
         coordinates = []
         for point_node in self.root.iter("point"):
@@ -69,7 +69,7 @@ class DWML_Parser:
 
     def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
         daily_weather = []
-        for max_temp, min_temp, condition in zip(max_temps, min_temps, daily_conditions):
+        for max_temp, min_temp, condition in izip_longest(max_temps, min_temps, daily_conditions, fillvalue=None):
             daily_weather.append(Weather(max_temp, min_temp, condition))
         return daily_weather
 
