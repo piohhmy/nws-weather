@@ -4,12 +4,14 @@ import xml.etree.ElementTree as ET
 import datetime
 from lib.forecast import Coordinates, Forecast, Weather
 from itertools import izip_longest
+from functools import partial
 
 
 
 class DWML_Parser:
-    def __init__(self, dwml):
+    def __init__(self, dwml, parsePartialEntries=False):
         self.root  = ET.fromstring(dwml)
+        self.parsePartialEntries = parsePartialEntries
 
     def generate_forecast_grid(self):
         coordinates = self.get_coordinate_list()
@@ -69,7 +71,8 @@ class DWML_Parser:
 
     def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
         daily_weather = []
-        for max_temp, min_temp, condition in izip_longest(max_temps, min_temps, daily_conditions, fillvalue=None):
+        zipper = partial(izip_longest, fillvalue=None) if self.parsePartialEntries else zip
+        for max_temp, min_temp, condition in zipper(max_temps, min_temps, daily_conditions):
             daily_weather.append(Weather(max_temp, min_temp, condition))
         return daily_weather
 
