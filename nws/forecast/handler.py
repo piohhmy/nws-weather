@@ -16,13 +16,14 @@ logger.setLevel(logging.DEBUG)
 def get(event, context):
     print(event)
     coord = Coordinates(event['lat'], event['lng'])
-    return forecast(coord)
+    supportPartialForecasts = event['Accept'] == "application/vnd.weatherhunt.v2+json"
 
-#TODO: Add back the caching
-def forecast(coord):
+    return forecast(coord, supportPartialForecasts )
+
+def forecast(coord, supportPartialForecasts):
     new_forecast_dwml = noaa_proxy.request_dwml_grid_points([coord])
     logger.debug('dwml new forecasts: %s', new_forecast_dwml)
-    parser = DWML_Parser(new_forecast_dwml)
+    parser = DWML_Parser(new_forecast_dwml, supportPartialForecasts)
     new_forecasts = parser.generate_forecast_grid()
 
     return_content = json.dumps(new_forecasts, cls=ForecastSerializer)

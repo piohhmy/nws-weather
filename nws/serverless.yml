@@ -17,7 +17,7 @@ provider:
   name: aws
   runtime: python2.7
   profile: nws-weather
-  stage: dev
+  stage: test
   region: us-west-2
   timeout: 15
   memory: 512
@@ -60,7 +60,8 @@ functions:
               application/json: >
                 {
                   "lat" : "$input.params('lat')",
-                  "lng": "$input.params('lng')"
+                  "lng": "$input.params('lng')",
+                  "Accept": "$input.params('Accept')"
                 }
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
