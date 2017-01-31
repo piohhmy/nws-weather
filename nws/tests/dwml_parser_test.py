@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import datetime
-from nws import dwml_parser
-from nws.forecast import Coordinates
+from lib import dwml_parser
+from lib.forecast import Coordinates
 import unittest
-from nws.forecast import *
+from lib.forecast import *
 from nose.tools import *
 import json
 import os

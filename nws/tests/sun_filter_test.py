@@ -1,5 +1,5 @@
-from nws.forecast import Forecast, Weather, Coordinates
-from nws import filters
+from lib.forecast import Forecast, Weather, Coordinates
+from lib import filters
 import datetime
 from nose.tools import assert_equals
 

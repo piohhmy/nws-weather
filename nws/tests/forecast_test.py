@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from nws.forecast import *
+from lib.forecast import *
 import unittest
 import json
 
