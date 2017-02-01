@@ -69,7 +69,7 @@ class DWML_Parser:
                 break
         return daily_conditions
 
-    def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
+    def munge_daily_weather(self, forecast_dates, max_temps, min_temps, daily_conditions):
         daily_weather = []
         zipper = partial(izip_longest, fillvalue=None) if self.parsePartialEntries else zip
         for date, max_temp, min_temp, condition in zipper(forecast_dates,max_temps, min_temps, daily_conditions):

@@ -58,20 +58,21 @@ class TestForecast(unittest.TestCase):
 
     def test_static_dwml_contains_weather_condition_for_date(self):
         requested_date = datetime.date(2012, 8, 31).isoformat()
-        self.assertIsInstance(self.forecasts[0].daily_weather[requested_date], Weather)
+        self.assertIsInstance(self.forecasts[0].daily_weather[0], Weather)
 
     def test_static_dwml_contains_correct_weather_data(self):
         requested_date = datetime.date(2012, 8, 31).isoformat()
-        actual_weather = self.forecasts[0].daily_weather[requested_date]
-        expected_weather = Weather(78, 45, "Mostly Sunny")
+        actual_weather = self.forecasts[0].daily_weather[0]
+        expected_weather = Weather(requested_date, 78, 45, "Mostly Sunny")
         self.assertEqual(actual_weather, expected_weather)
 
     def test_static_dwml_contains_forecast_for_multiple_points(self):
         self.assertEqual(len(self.forecasts), 9)
 
     def test_json_serialization_from_forecast_grid(self):
-        print json.dumps(self.forecasts, sort_keys=True, indent=4,
+        json = json.dumps(self.forecasts, sort_keys=True, indent=4,
                 cls=ForecastSerializer)
+        self.assertEqual(len(json[0]), 7) 
 
 class TestPartialForecastsWithNulls(unittest.TestCase):
     def setUp(self):
@@ -83,14 +84,14 @@ class TestPartialForecastsWithNulls(unittest.TestCase):
 
     def test_static_dwml_contains_weather_data_when_only_high_and_low_are_available(self):
         requested_date = datetime.date(2017, 1, 30).isoformat()
-        actual_weather = self.forecasts[0].daily_weather[requested_date]
-        expected_weather = Weather(58, 41, None)
+        actual_weather = self.forecasts[0].daily_weather[5]
+        expected_weather = Weather(requested_date, 58, 41, None)
         self.assertEqual(actual_weather, expected_weather)
 
     def test_static_dwml_contains_weather_data_when_only_high_is_available(self):
         requested_date = datetime.date(2017, 1, 31).isoformat()
-        actual_weather = self.forecasts[0].daily_weather[requested_date]
-        expected_weather = Weather(54, None, None)
+        actual_weather = self.forecasts[0].daily_weather[6]
+        expected_weather = Weather(requested_date, 54, None, None)
         self.assertEqual(actual_weather, expected_weather)
 
     def test_json_serialization_from_forecast_grid(self):
@@ -105,15 +106,8 @@ class TestCompleteForecastsWithNulls(unittest.TestCase):
         parser = dwml_parser.DWML_Parser(dwml, parsePartialEntries=False)
         self.forecasts = parser.generate_forecast_grid()
 
-    def test_static_dwml_does_not_contain_weather_data_when_only_high_and_low_are_available(self):
-        requested_date = datetime.date(2017, 1, 30).isoformat()
-        with self.assertRaises(KeyError):
-            self.forecasts[0].daily_weather[requested_date]
-
-    def test_static_dwml_does_not_contain_weather_data_when_only_high_is_available(self):
-        requested_date = datetime.date(2017, 1, 31).isoformat()
-        with self.assertRaises(KeyError):
-            self.forecasts[0].daily_weather[requested_date]
+    def test_static_dwml_does_not_contain_weather_data_for_partial_forecasts(self):
+        self.assertEqual(len(self.forecasts[0].daily_weather), 3)
 
     def test_json_serialization_from_forecast_grid(self):
         print json.dumps(self.forecasts, sort_keys=True, indent=4,
