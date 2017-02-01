@@ -25,6 +25,7 @@ def forecast(coord, supportPartialForecasts):
     logger.debug('dwml new forecasts: %s', new_forecast_dwml)
     parser = DWML_Parser(new_forecast_dwml, supportPartialForecasts)
     new_forecasts = parser.generate_forecast_grid()
+    print new_forecasts
 
     return_content = json.dumps(new_forecasts, cls=ForecastSerializer)
 

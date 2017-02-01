@@ -6,7 +6,7 @@ import json
 import math
 
 class Coordinates:
-    def __init__(self, lat, lng):      
+    def __init__(self, lat, lng):
         self.lat = lat
         self.lng = lng
 
@@ -29,18 +29,18 @@ class Coordinates:
 
     def __repr__(self):
         return "{},{}".format(self.lat, self.lng)
-        
+
 
 class Forecast:
     def __init__(self, coordinates):
         self.coordinates = coordinates
-        self.daily_weather = {}
+        self.daily_weather = []
     def __str__(self):
         return_str =  "Forecast for Lat:%s, Lon:%s" % \
                       (self.coordinates.lat, self.coordinates.lng)
-        for day, weather in self.daily_weather.items():
+        for weather in self.daily_weather:
             return_str += "\n%s: High %s, Low %s, Condition %s " % \
-                          (str(day), weather.high, weather.low, weather.condition) 
+                          (str(weather.date), weather.high, weather.low, weather.condition)
         return return_str
 
 class ForecastSerializer(json.JSONEncoder):
@@ -53,12 +53,12 @@ class ForecastSerializer(json.JSONEncoder):
 
 
 class Weather:
-    def __init__(self, high, low, condition):
+    def __init__(self, date, high, low, condition):
+        self.date = date
         self.high = high
         self.low = low
         self.condition = condition
-        self.unit = "Fahrenheit"
-        
+
     def __eq__(self, other):
         return (isinstance(other, self.__class__)
                 and self.__dict__ == other.__dict__)

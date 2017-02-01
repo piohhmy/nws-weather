@@ -16,8 +16,8 @@ class DWML_Parser:
     def generate_forecast_grid(self):
         coordinates = self.get_coordinate_list()
         forecast_dates = self.get_forecast_dates()
-        forecasts = self.get_weather_forecasts()
-        return self.munge_forecast_grid(coordinates, forecast_dates, forecasts)
+        forecasts = self.get_weather_forecasts(forecast_dates)
+        return self.munge_forecast_grid(coordinates, forecasts)
 
     def get_coordinate_list(self):
         coordinates = []
@@ -37,12 +37,12 @@ class DWML_Parser:
             forecast_dates.append(dt.date().isoformat())
         return forecast_dates
 
-    def get_weather_forecasts(self):
+    def get_weather_forecasts(self, forecast_dates):
         weather_list= []
         for forecast_node in self.root.iter("parameters"):
             max_temps, min_temps = self.get_daily_temperatures(forecast_node)
             daily_conditions = self.get_daily_conditions(forecast_node)
-            daily_weather = self.munge_daily_weather(max_temps, min_temps, daily_conditions)
+            daily_weather = self.munge_daily_weather(forecast_dates, max_temps, min_temps, daily_conditions)
             weather_list.append(daily_weather)
         return weather_list
 
@@ -72,16 +72,15 @@ class DWML_Parser:
     def munge_daily_weather(self, max_temps, min_temps, daily_conditions):
         daily_weather = []
         zipper = partial(izip_longest, fillvalue=None) if self.parsePartialEntries else zip
-        for max_temp, min_temp, condition in zipper(max_temps, min_temps, daily_conditions):
-            daily_weather.append(Weather(max_temp, min_temp, condition))
+        for date, max_temp, min_temp, condition in zipper(forecast_dates,max_temps, min_temps, daily_conditions):
+            daily_weather.append(Weather(date, max_temp, min_temp, condition))
         return daily_weather
 
-    def munge_forecast_grid(self, coordinates, dates, weather_list):
+    def munge_forecast_grid(self, coordinates, weather_list):
         forecast_grid = []
         for coord, weather in zip(coordinates, weather_list):
             forecast = Forecast(coord)
-            for start_date, weather_per_day in zip(dates, weather):
-               forecast.daily_weather[start_date] = weather_per_day
+            forecast.daily_weather = weather
             forecast_grid.append(forecast)
         return forecast_grid
 
