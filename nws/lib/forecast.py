@@ -43,7 +43,19 @@ class Forecast:
                           (str(weather.date), weather.high, weather.low, weather.condition)
         return return_str
 
-class ForecastSerializer(json.JSONEncoder):
+class ForecastSerializerV1(json.JSONEncoder):
+    """ JSON serializes Forecast objects """
+    def default(self, obj):
+        if isinstance(obj, (Coordinates, Weather)):
+            return obj.__dict__
+        elif isinstance(obj, Forecast):
+            v1Forecast = {day.date: day for day in obj.daily_weather}
+            obj.daily_weather = v1Forecast
+            return obj.__dict__
+        else:
+            json.JSONEncoder.default(self, obj)
+
+class ForecastSerializerV2(json.JSONEncoder):
     """ JSON serializes Forecast objects """
     def default(self, obj):
         if isinstance(obj, (Coordinates, Weather, Forecast)):

@@ -34,7 +34,9 @@ class DWML_Parser:
             excess_time_info_index = time.rfind('-')
             time = time[0:excess_time_info_index]
             dt = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
-            forecast_dates.append(dt.date().isoformat())
+            isoDate = dt.date().isoformat()
+            if isoDate not in forecast_dates:
+                forecast_dates.append(dt.date().isoformat())
         return forecast_dates
 
     def get_weather_forecasts(self, forecast_dates):

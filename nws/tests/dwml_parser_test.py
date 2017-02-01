@@ -69,10 +69,19 @@ class TestForecast(unittest.TestCase):
     def test_static_dwml_contains_forecast_for_multiple_points(self):
         self.assertEqual(len(self.forecasts), 9)
 
-    def test_json_serialization_from_forecast_grid(self):
-        json = json.dumps(self.forecasts, sort_keys=True, indent=4,
-                cls=ForecastSerializer)
-        self.assertEqual(len(json[0]), 7) 
+    def test_json_serializationV2_from_forecast_grid(self):
+        j = json.loads(json.dumps(self.forecasts, sort_keys=True, indent=4,
+                cls=ForecastSerializerV2))
+        first_forecast = j[0]
+        self.assertEqual(len(first_forecast['daily_weather']), 7)
+        self.assertEqual(first_forecast['daily_weather'][0]['date'], '2012-08-31')
+
+    def test_json_serializationV1_from_forecast_grid(self):
+        j = json.loads(json.dumps(self.forecasts, sort_keys=True, indent=4,
+                cls=ForecastSerializerV1))
+        first_forecast = j[0]
+        self.assertEqual(len(first_forecast['daily_weather']), 7)
+        self.assertEqual(first_forecast['daily_weather']['2012-08-31']['high'], 78)
 
 class TestPartialForecastsWithNulls(unittest.TestCase):
     def setUp(self):
@@ -94,9 +103,12 @@ class TestPartialForecastsWithNulls(unittest.TestCase):
         expected_weather = Weather(requested_date, 54, None, None)
         self.assertEqual(actual_weather, expected_weather)
 
+    def test_static_forecast_contains_one_weather_entry_per_dwml_day(self):
+        self.assertEqual(len(self.forecasts[0].daily_weather), 7)
+
     def test_json_serialization_from_forecast_grid(self):
         print json.dumps(self.forecasts, sort_keys=True, indent=4,
-                cls=ForecastSerializer)
+                cls=ForecastSerializerV2)
 
 class TestCompleteForecastsWithNulls(unittest.TestCase):
     def setUp(self):
@@ -111,7 +123,7 @@ class TestCompleteForecastsWithNulls(unittest.TestCase):
 
     def test_json_serialization_from_forecast_grid(self):
         print json.dumps(self.forecasts, sort_keys=True, indent=4,
-                cls=ForecastSerializer)
+                cls=ForecastSerializerV2)
 
 class TestLatLngList(unittest.TestCase):
     def test_1_coord_returns_list_of_pts(self):

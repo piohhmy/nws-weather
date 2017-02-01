@@ -11,7 +11,7 @@ class TestForecast(unittest.TestCase):
         todays_weather = Weather(today, "70", "40", "sunny")
         forecast.daily_weather = [todays_weather]
 
-        print json.dumps(forecast, cls=ForecastSerializer)
+        print json.dumps(forecast, cls=ForecastSerializerV2)
 
 class TestCoordinates(unittest.TestCase):
     def setUp(self):

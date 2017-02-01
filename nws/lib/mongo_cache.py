@@ -23,7 +23,7 @@ class MongoRepo(object):
 
 	@staticmethod
 	def insert(new_forecast):
-		daily_weather_doc = json.loads(json.dumps(new_forecast.daily_weather, cls=forecast.ForecastSerializer))
+		daily_weather_doc = json.loads(json.dumps(new_forecast.daily_weather, cls=forecast.ForecastSerializerV2))
 		forecast_doc = {'createdAt': datetime.datetime.utcnow(),
 		                'loc':{
 		                   'type':'Point',
