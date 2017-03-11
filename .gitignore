@@ -2,9 +2,11 @@
 
 # Serverless
 **.serverless
+*.requirements
 
-# Heroku
+# Config
 *.env
+.project
 
 # Packages
 *.egg
