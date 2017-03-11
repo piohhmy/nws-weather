@@ -1,7 +1,6 @@
 *.py[co]
 
 # Serverless
-nws/vendored
 **.serverless
 
 # Heroku

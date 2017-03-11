@@ -3,8 +3,6 @@ import sys
 import json
 import logging
 
-here = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(here, "../vendored"))
 from lib.dwml_parser import DWML_Parser
 from lib import noaa_proxy
 from lib.forecast import Coordinates, ForecastSerializerV2, ForecastSerializerV1

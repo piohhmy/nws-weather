@@ -12,6 +12,8 @@
 # Happy Coding!
 
 service: nws
+plugins:
+  - serverless-python-requirements
 
 provider:
   name: aws
