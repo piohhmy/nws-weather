@@ -30,13 +30,9 @@ class DWML_Parser:
     def get_forecast_dates(self):
         forecast_dates = []
         for start_time_node in self.root.iter("start-valid-time"):
-            time = start_time_node.text
-            excess_time_info_index = time.rfind('-')
-            time = time[0:excess_time_info_index]
-            dt = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
-            isoDate = dt.date().isoformat()
+            isoDate = parseIsoDate(start_time_node.text)
             if isoDate not in forecast_dates:
-                forecast_dates.append(dt.date().isoformat())
+                forecast_dates.append(isoDate)
         return forecast_dates
 
     def get_weather_forecasts(self, forecast_dates):
@@ -97,3 +93,9 @@ def latlonlist_transform(dwml):
     coord_pairs = elem.split(' ')
     lat_lon_list = map(transform_latlong_str, coord_pairs)
     return lat_lon_list
+
+def parseIsoDate(datestr):
+    excess_time_info_index = datestr.rfind('-')
+    datestr = datestr[0:excess_time_info_index]
+    dt = datetime.datetime.strptime(datestr, "%Y-%m-%dT%H:%M:%S")
+    return dt.date().isoformat()

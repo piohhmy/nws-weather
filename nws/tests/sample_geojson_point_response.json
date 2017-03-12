@@ -1,0 +1,220 @@
+{
+  "@context": [
+    "https://raw.githubusercontent.com/geojson/geojson-ld/master/contexts/geojson-base.jsonld",
+    {
+      "wx": "https://api.weather.gov/ontology#",
+      "geo": "http://www.opengis.net/ont/geosparql#",
+      "unit": "http://codes.wmo.int/common/unit/",
+      "@vocab": "https://api.weather.gov/ontology#"
+    }
+  ],
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -94.6716,
+      45.0693
+    ]
+  },
+  "properties": {
+    "updated": "2017-03-11T14:41:59+00:00",
+    "periods": [
+      {
+        "number": 1,
+        "name": "Today",
+        "startTime": "2017-03-11T10:00:00-06:00",
+        "endTime": "2017-03-11T18:00:00-06:00",
+        "isDaytime": true,
+        "temperature": 22,
+        "windSpeed": "7 mph",
+        "windDirection": "N",
+        "icon": "https://api.weather.gov/icons/land/day/bkn?size=medium",
+        "shortForecast": "Mostly Cloudy",
+        "detailedForecast": "Mostly cloudy, with a high near 22. North wind around 7 mph.",
+        "detailedForecastSI": "Mostly cloudy, with a high near -6. North wind around 11 km/h."
+      },
+      {
+        "number": 2,
+        "name": "Tonight",
+        "startTime": "2017-03-11T18:00:00-06:00",
+        "endTime": "2017-03-12T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 9,
+        "windSpeed": "6 mph",
+        "windDirection": "NNE",
+        "icon": "https://api.weather.gov/icons/land/night/sct?size=medium",
+        "shortForecast": "Partly Cloudy",
+        "detailedForecast": "Partly cloudy, with a low around 9. North northeast wind around 6 mph.",
+        "detailedForecastSI": "Partly cloudy, with a low around -13. North northeast wind around 9 km/h."
+      },
+      {
+        "number": 3,
+        "name": "Sunday",
+        "startTime": "2017-03-12T06:00:00-05:00",
+        "endTime": "2017-03-12T18:00:00-05:00",
+        "isDaytime": true,
+        "temperature": 23,
+        "windSpeed": " 6 to 15 mph",
+        "windDirection": "ESE",
+        "icon": "https://api.weather.gov/icons/land/day/snow,40/snow,90?size=medium",
+        "shortForecast": "Snow",
+        "detailedForecast": "Snow after 7am. Cloudy, with a high near 23. East southeast wind 6 to 15 mph, with gusts as high as 25 mph. Chance of precipitation is 90%. New snow accumulation of 3 to 5 inches possible.",
+        "detailedForecastSI": "Snow after 7am. Cloudy, with a high near -5. East southeast wind 9 to 24 km/h, with gusts as high as 41 km/h. Chance of precipitation is 90%. New snow accumulation of 8 to 12 cm possible."
+      },
+      {
+        "number": 4,
+        "name": "Sunday Night",
+        "startTime": "2017-03-12T18:00:00-05:00",
+        "endTime": "2017-03-13T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 16,
+        "windSpeed": " 12 to 15 mph",
+        "windDirection": "ENE",
+        "icon": "https://api.weather.gov/icons/land/night/snow,90/snow,80?size=medium",
+        "shortForecast": "Snow",
+        "detailedForecast": "Snow. Cloudy, with a low around 16. East northeast wind 12 to 15 mph. Chance of precipitation is 90%. New snow accumulation of 5 to 9 inches possible.",
+        "detailedForecastSI": "Snow. Cloudy, with a low around -9. East northeast wind 19 to 24 km/h. Chance of precipitation is 90%. New snow accumulation of 16 to 22 cm possible."
+      },
+      {
+        "number": 5,
+        "name": "Monday",
+        "startTime": "2017-03-13T06:00:00-05:00",
+        "endTime": "2017-03-13T18:00:00-05:00",
+        "isDaytime": true,
+        "temperature": 26,
+        "windSpeed": "10 mph",
+        "windDirection": "NNE",
+        "icon": "https://api.weather.gov/icons/land/day/snow,60/snow,20?size=medium",
+        "shortForecast": "Snow Likely",
+        "detailedForecast": "Snow likely. Mostly cloudy, with a high near 26. North northeast wind around 10 mph. Chance of precipitation is 60%. New snow accumulation of around one inch possible.",
+        "detailedForecastSI": "Snow likely. Mostly cloudy, with a high near -3. North northeast wind around 17 km/h. Chance of precipitation is 60%. New snow accumulation of around 2,5 cm possible."
+      },
+      {
+        "number": 6,
+        "name": "Monday Night",
+        "startTime": "2017-03-13T18:00:00-05:00",
+        "endTime": "2017-03-14T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 9,
+        "windSpeed": " 6 to 9 mph",
+        "windDirection": "N",
+        "icon": "https://api.weather.gov/icons/land/night/snow,20/sct?size=medium",
+        "shortForecast": "Slight Chance Snow then Partly Cloudy",
+        "detailedForecast": "A slight chance of snow before 7pm. Partly cloudy, with a low around 9. Chance of precipitation is 20%.",
+        "detailedForecastSI": "A slight chance of snow before 7pm. Partly cloudy, with a low around -13. Chance of precipitation is 20%."
+      },
+      {
+        "number": 7,
+        "name": "Tuesday",
+        "startTime": "2017-03-14T06:00:00-05:00",
+        "endTime": "2017-03-14T18:00:00-05:00",
+        "isDaytime": true,
+        "temperature": 25,
+        "windSpeed": "7 mph",
+        "windDirection": "NE",
+        "icon": "https://api.weather.gov/icons/land/day/few?size=medium",
+        "shortForecast": "Sunny",
+        "detailedForecast": "Sunny, with a high near 25.",
+        "detailedForecastSI": "Sunny, with a high near -4."
+      },
+      {
+        "number": 8,
+        "name": "Tuesday Night",
+        "startTime": "2017-03-14T18:00:00-05:00",
+        "endTime": "2017-03-15T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 10,
+        "windSpeed": "5 mph",
+        "windDirection": "E",
+        "icon": "https://api.weather.gov/icons/land/night/sct?size=medium",
+        "shortForecast": "Partly Cloudy",
+        "detailedForecast": "Partly cloudy, with a low around 10.",
+        "detailedForecastSI": "Partly cloudy, with a low around -12."
+      },
+      {
+        "number": 9,
+        "name": "Wednesday",
+        "startTime": "2017-03-15T06:00:00-05:00",
+        "endTime": "2017-03-15T18:00:00-05:00",
+        "isDaytime": true,
+        "temperature": 31,
+        "windSpeed": " 6 to 10 mph",
+        "windDirection": "S",
+        "icon": "https://api.weather.gov/icons/land/day/sct?size=medium",
+        "shortForecast": "Mostly Sunny",
+        "detailedForecast": "Mostly sunny, with a high near 31.",
+        "detailedForecastSI": "Mostly sunny, with a high near -1."
+      },
+      {
+        "number": 10,
+        "name": "Wednesday Night",
+        "startTime": "2017-03-15T18:00:00-05:00",
+        "endTime": "2017-03-16T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 22,
+        "windSpeed": "8 mph",
+        "windDirection": "S",
+        "icon": "https://api.weather.gov/icons/land/night/bkn?size=medium",
+        "shortForecast": "Mostly Cloudy",
+        "detailedForecast": "Mostly cloudy, with a low around 22.",
+        "detailedForecastSI": "Mostly cloudy, with a low around -6."
+      },
+      {
+        "number": 11,
+        "name": "Thursday",
+        "startTime": "2017-03-16T06:00:00-05:00",
+        "endTime": "2017-03-16T18:00:00-05:00",
+        "isDaytime": true,
+        "temperature": 42,
+        "windSpeed": "10 mph",
+        "windDirection": "S",
+        "icon": "https://api.weather.gov/icons/land/day/sct?size=medium",
+        "shortForecast": "Mostly Sunny",
+        "detailedForecast": "Mostly sunny, with a high near 42.",
+        "detailedForecastSI": "Mostly sunny, with a high near 6."
+      },
+      {
+        "number": 12,
+        "name": "Thursday Night",
+        "startTime": "2017-03-16T18:00:00-05:00",
+        "endTime": "2017-03-17T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 31,
+        "windSpeed": "12 mph",
+        "windDirection": "WSW",
+        "icon": "https://api.weather.gov/icons/land/night/snow,30/snow,70?size=medium",
+        "shortForecast": "Rain And Snow Likely",
+        "detailedForecast": "A chance of rain between 7pm and 9pm, then rain and snow likely. Mostly cloudy, with a low around 31. Chance of precipitation is 70%.",
+        "detailedForecastSI": "A chance of rain between 7pm and 9pm, then rain and snow likely. Mostly cloudy, with a low around -1. Chance of precipitation is 70%."
+      },
+      {
+        "number": 13,
+        "name": "Friday",
+        "startTime": "2017-03-17T06:00:00-05:00",
+        "endTime": "2017-03-17T18:00:00-05:00",
+        "isDaytime": true,
+        "temperature": 45,
+        "windSpeed": " 12 to 18 mph",
+        "windDirection": "WNW",
+        "icon": "https://api.weather.gov/icons/land/day/snow,70/snow,30?size=medium",
+        "shortForecast": "Snow Likely",
+        "detailedForecast": "Snow likely before 10am, then a chance of rain and snow between 10am and 1pm. Partly sunny, with a high near 45. Chance of precipitation is 70%.",
+        "detailedForecastSI": "Snow likely before 10am, then a chance of rain and snow between 10am and 1pm. Partly sunny, with a high near 7. Chance of precipitation is 70%."
+      },
+      {
+        "number": 14,
+        "name": "Friday Night",
+        "startTime": "2017-03-17T18:00:00-05:00",
+        "endTime": "2017-03-18T06:00:00-05:00",
+        "isDaytime": false,
+        "temperature": 30,
+        "windSpeed": " 12 to 17 mph",
+        "windDirection": "NW",
+        "icon": "https://api.weather.gov/icons/land/night/sct?size=medium",
+        "shortForecast": "Partly Cloudy",
+        "detailedForecast": "Partly cloudy, with a low around 30.",
+        "detailedForecastSI": "Partly cloudy, with a low around -1."
+      }
+    ]
+  }
+}

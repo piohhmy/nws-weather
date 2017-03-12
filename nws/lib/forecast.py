@@ -35,6 +35,10 @@ class Forecast:
     def __init__(self, coordinates):
         self.coordinates = coordinates
         self.daily_weather = []
+
+    def add(self, weather):
+        self.daily_weather.append(weather)
+
     def __str__(self):
         return_str =  "Forecast for Lat:%s, Lon:%s" % \
                       (self.coordinates.lat, self.coordinates.lng)
@@ -42,6 +46,7 @@ class Forecast:
             return_str += "\n%s: High %s, Low %s, Condition %s " % \
                           (str(weather.date), weather.high, weather.low, weather.condition)
         return return_str
+
 
 class ForecastSerializerV1(json.JSONEncoder):
     """ JSON serializes Forecast objects """
@@ -76,7 +81,6 @@ class Weather:
                 and self.__dict__ == other.__dict__)
     def __ne__(self, other):
         return not self.__eq__(other)
-
 
 
 def distance_on_unit_sphere(lat1, long1, lat2, long2):
