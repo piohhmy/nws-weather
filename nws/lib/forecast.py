@@ -82,6 +82,9 @@ class Weather:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __repr__(self):
+        return str(self.__dict__)
+
 
 def distance_on_unit_sphere(lat1, long1, lat2, long2):
     # Convert latitude and longitude to

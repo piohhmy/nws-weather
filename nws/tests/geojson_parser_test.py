@@ -58,7 +58,10 @@ class TestGeoJsonParser(unittest.TestCase):
         self.assertEqual(actual_weather, expected_weather)
 
     def test_ignores_compound_short_forecasts(self):
-        shortForecast = "Slight Chance Snow then Mostly Cloudy"
+        expected_date = datetime.date(2017, 3, 13).isoformat()
+        actual_weather = self.forecast.daily_weather[2]
+        expected_weather = Weather(expected_date, 26, 9, "Slight Chance Snow")
+        self.assertEqual(actual_weather, expected_weather)
 
     def test_is_serializable_with_serializationV2(self):
         j = json.loads(json.dumps([self.forecast], sort_keys=True, indent=4,

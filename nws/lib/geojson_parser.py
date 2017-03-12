@@ -20,6 +20,6 @@ class GeoJsonParser:
             forecasts = list(forecasts)
             high = next((f['temperature'] for f in forecasts if f['isDaytime']), None)
             low = next((f['temperature'] for f in forecasts if not f['isDaytime']), None)
-            condition = forecasts[0]['shortForecast']
+            condition = forecasts[0]['shortForecast'].split(' then')[0]
             forecast.add(Weather(day.isoformat(), high, low, condition))
         return forecast

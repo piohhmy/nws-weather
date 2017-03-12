@@ -85,7 +85,7 @@
         "windSpeed": "10 mph",
         "windDirection": "NNE",
         "icon": "https://api.weather.gov/icons/land/day/snow,60/snow,20?size=medium",
-        "shortForecast": "Snow Likely",
+        "shortForecast": "Slight Chance Snow then Partly Cloudy",
         "detailedForecast": "Snow likely. Mostly cloudy, with a high near 26. North northeast wind around 10 mph. Chance of precipitation is 60%. New snow accumulation of around one inch possible.",
         "detailedForecastSI": "Snow likely. Mostly cloudy, with a high near -3. North northeast wind around 17 km/h. Chance of precipitation is 60%. New snow accumulation of around 2,5 cm possible."
       },
