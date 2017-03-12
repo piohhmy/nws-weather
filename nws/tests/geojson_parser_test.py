@@ -55,8 +55,6 @@ class TestGeoJsonParser(unittest.TestCase):
         expected_date = datetime.date(2017, 3, 11).isoformat()
         actual_weather = self.forecast.daily_weather[0]
         expected_weather = Weather(expected_date, 22, 9, "Mostly Cloudy")
-        print expected_weather
-        print actual_weather
         self.assertEqual(actual_weather, expected_weather)
 
     def test_ignores_compound_short_forecasts(self):
@@ -68,6 +66,29 @@ class TestGeoJsonParser(unittest.TestCase):
         forecast = j[0]
         self.assertEqual(len(forecast['daily_weather']), 7)
         self.assertEqual(forecast['daily_weather'][0]['date'], '2017-03-11')
+
+
+class TestGeoJsonParserWithMissingDayForecast(unittest.TestCase):
+    def setUp(self):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        f = open(curr_dir + '/sample_geojson_point_response_no_day_forecast.json')
+        geojson = json.loads(f.read())
+        parser = geojson_parser.GeoJsonParser(geojson)
+        self.forecast = parser.parse()
+
+    def test_returns_correct_weather_data_on_missing_day_forecast(self):
+        expected_date = datetime.date(2017, 3, 11).isoformat()
+        actual_weather = self.forecast.daily_weather[0]
+        expected_weather = Weather(expected_date, None, 9, "Mostly Cloudy")
+        self.assertEqual(actual_weather, expected_weather)
+
+    def test_returns_correct_weather_data_on_missing_night_forecast(self):
+        expected_date = datetime.date(2017, 3, 18).isoformat()
+        actual_weather = self.forecast.daily_weather[7]
+        expected_weather = Weather(expected_date, 45, None, "Mostly Sunny")
+        self.assertEqual(actual_weather, expected_weather)
+
+
 
 if __name__ == '__main__':
     unittest.main(exit=False)
