@@ -13,6 +13,8 @@ jobs:
           working_directory: ~/ci/nws
       - run: npm install
       - deploy:
+          name: Serverless Deploy
+          working_directory: ~/ci/nws
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
                npm run deploy-prod

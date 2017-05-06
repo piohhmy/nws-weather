@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "nosetests nws",
-    "deploy-test": "sls deploy --stage test",
-    "deploy-prod": "sls deploy --stage dev"
+    "deploy-test": "cd nws && sls deploy --stage test",
+    "deploy-prod": "cd nws && sls deploy --stage dev"
   },
   "repository": {
     "type": "git",
