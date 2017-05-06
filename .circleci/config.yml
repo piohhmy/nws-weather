@@ -6,10 +6,7 @@ jobs:
       - image: python:2.7
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: pip install -r requirements.txt
-          working_directory: ~/ci/nws
+      - run: pip install -r requirements-dev.txt
       - run:
           name: Unit Test
           command: nosetests
