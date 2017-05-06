@@ -4,8 +4,7 @@ nws-weather
 Proxy for interacting with the v3 RESTful api and the DWML weather APIs provided by the
 National Weather Service (NWS) used by [weatherhunt](http://weatherhunt.com) for iOS
 
-[![CircleCI](https://circleci.com/gh/piohhmy/nws-weather.svg?style=svg)](https://circleci.com/gh/piohhmy/nws-weather)
-
+[![CircleCI](https://circleci.com/gh/piohhmy/nws-weather.svg?style=svg&circle-token=bad595b055130a6838bb662d81a1a34479fe24f7)](https://circleci.com/gh/piohhmy/nws-weather)
 ## Get a Weather Forecast for a point
 
 ```
