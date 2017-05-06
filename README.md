@@ -1,10 +1,10 @@
 nws-weather
 ===========
 
-Simplified interface for interacting with the weather APIs provided by the
-National Weather Service (NWS)
+Proxy for interacting with the v3 RESTful api and the DWML weather APIs provided by the
+National Weather Service (NWS) used by [weatherhunt](http://weatherhunt.com) for iOS
 
-[ ![Codeship Status for piohhmy/nws-weather](https://www.codeship.com/projects/826e75f0-4376-0131-40fb-22591c88ea21/status)](https://www.codeship.com/projects/10696)
+[![CircleCI](https://circleci.com/gh/piohhmy/nws-weather.svg?style=svg)](https://circleci.com/gh/piohhmy/nws-weather)
 
 ## Get a Weather Forecast for a point
 
