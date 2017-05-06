@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/ci
     docker:
-      - image: piohhmy/weatherhunt-primary
+      - image: piohhmy/weatherhunt-primary:0.0.1
     steps:
       - checkout
       - run: pip install -r requirements-dev.txt
