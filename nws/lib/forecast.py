@@ -7,8 +7,8 @@ import math
 
 class Coordinates:
     def __init__(self, lat, lng):
-        self.lat = lat
-        self.lng = lng
+        self.lat = str(float(lat))
+        self.lng = str(float(lng))
 
     def miles_from(self, other):
         earth_radius_miles = 3960

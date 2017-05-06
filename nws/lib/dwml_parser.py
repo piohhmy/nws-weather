@@ -1,12 +1,8 @@
-#!/usr/bin/env python
-
 import xml.etree.ElementTree as ET
 import datetime
 from lib.forecast import Coordinates, Forecast, Weather
 from itertools import izip_longest
 from functools import partial
-
-
 
 class DWML_Parser:
     def __init__(self, dwml, parsePartialEntries=False):
