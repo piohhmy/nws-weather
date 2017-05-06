@@ -15,8 +15,8 @@ class TestForecast(unittest.TestCase):
 
 class TestCoordinates(unittest.TestCase):
     def setUp(self):
-        self.latitude = 127.23
-        self.longitude = 45.2
+        self.latitude = '127.23'
+        self.longitude = '45.2'
 
     def test_coordinates_get_latitude(self):
         coors = Coordinates(self.latitude, self.longitude)
