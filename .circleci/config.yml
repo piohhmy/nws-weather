@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/ci
+    docker:
+      - image: python:2.7
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt
+          working_directory: ~/ci/nws
+      - run:
+          name: Unit Test
+          command: nosetests
+          working_directory: ~/ci/nws
