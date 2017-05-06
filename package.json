@@ -1,0 +1,25 @@
+{
+  "name": "nws-weather",
+  "version": "1.0.0",
+  "description": "nws-weather ===========",
+  "main": "index.js",
+  "scripts": {
+    "test": "nosetests nws",
+    "deploy-test": "sls deploy --stage test",
+    "deploy-prod": "sls deploy --stage dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piohhmy/nws-weather.git"
+  },
+  "author": "Danny Varner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/piohhmy/nws-weather/issues"
+  },
+  "homepage": "https://github.com/piohhmy/nws-weather#readme",
+  "devDependencies": {
+    "serverless": "1.12.1",
+    "serverless-python-requirements": "2.2.1"
+  }
+}

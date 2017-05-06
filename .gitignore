@@ -31,5 +31,7 @@ pip-log.txt
 #Translations
 *.mo
 
+# node
+node_modules/
 # Vim swap/temp
 *~

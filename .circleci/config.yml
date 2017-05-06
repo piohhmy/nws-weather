@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/ci
     docker:
-      - image: python:2.7
+      - image: piohhmy/weatherhunt-primary
     steps:
       - checkout
       - run: pip install -r requirements-dev.txt
@@ -11,3 +11,11 @@ jobs:
           name: Unit Test
           command: nosetests
           working_directory: ~/ci/nws
+      - run: npm install
+      - deploy:
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+               npm run deploy-prod
+            else
+               npm run deploy-test
+            fi
